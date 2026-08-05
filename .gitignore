@@ -27,7 +27,9 @@ account_credentials*
 
 # Generated and temporary output
 *.log
+*.zip
 replay_output/
+simulator_runtime/
 simulator_output/
 research_runs/
 simulator_sessions/generated/
