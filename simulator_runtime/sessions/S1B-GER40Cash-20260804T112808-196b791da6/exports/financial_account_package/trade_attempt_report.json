@@ -1,0 +1,134 @@
+[
+  {
+    "costs_zar": {
+      "commission": 0.0,
+      "slippage": 0.9055171335,
+      "spread": 15.561,
+      "swap": 0.0
+    },
+    "gross_pl_zar": 133.1463,
+    "net_pl_zar": 116.6797828665,
+    "position": {
+      "account_id": "CANONICAL-PAPER-ZAR",
+      "actual_emergency_risk_zar": 109.3916999102,
+      "actual_logical_risk_zar": 72.1703230374,
+      "attempt_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381|ENTRY_140",
+      "attempt_number": 1,
+      "closed_at": 1784120880.0,
+      "commission_zar": 0.0,
+      "current_protection": 24948.62,
+      "direction": "BEARISH",
+      "emergency_stop": 25027.2928571429,
+      "entry_fill_price": 25002.03219974,
+      "entry_reference_price": 25002.09,
+      "entry_timeframe": "M1",
+      "exit_fill_price": 24970.83914639,
+      "exit_reason": "OPPOSING_MEANINGFUL_BOS",
+      "initial_volume": 0.19,
+      "logical_stop": 24948.62,
+      "margin_used_zar": 0.0,
+      "opened_at": 1784118660.0,
+      "opening_commission_zar": 0.0,
+      "opening_slippage_cost_zar": 0.2306230374,
+      "opening_spread_cost_zar": 7.7805,
+      "partials": [
+        {
+          "closed_volume": 0.19,
+          "costs": {
+            "commission": 0.0,
+            "slippage": 0.9055171335,
+            "spread": 15.561,
+            "swap": 0.0
+          },
+          "executable_fraction": 1.0,
+          "fill_price": 24970.83914639,
+          "gross_PL": 133.1463,
+          "net_PL": 116.6797828665,
+          "reason": "OPPOSING_MEANINGFUL_BOS",
+          "remaining_volume": 0.0,
+          "requested_fraction": 1.0
+        }
+      ],
+      "peak_r": 3.1265382704,
+      "peak_unrealized_zar": 225.6432769626,
+      "planned_risk_zar": 150.0,
+      "position_id": "CANONICAL-PAPER-ZAR|POSITION|S1B-GER40Cash-20260804T112808-196b791da6|EVENT|000414",
+      "realized_zar": 124.4602828665,
+      "requested_volume": 0.3948991608,
+      "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381",
+      "setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381",
+      "status": "CLOSED",
+      "swap_zar": 0.0,
+      "symbol": "GER40Cash#",
+      "target_1": null,
+      "target_2": null,
+      "volume": 0.0
+    }
+  },
+  {
+    "costs_zar": {
+      "commission": 0.0,
+      "slippage": 0.7670805156,
+      "spread": 17.199,
+      "swap": 0.0
+    },
+    "gross_pl_zar": 158.0985,
+    "net_pl_zar": 140.1324194844,
+    "position": {
+      "account_id": "CANONICAL-PAPER-ZAR",
+      "actual_emergency_risk_zar": 88.1115045803,
+      "actual_logical_risk_zar": 45.4006856205,
+      "attempt_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381|REENTRY_193",
+      "attempt_number": 2,
+      "closed_at": 1784124900.0,
+      "commission_zar": 0.0,
+      "current_protection": 24932.15,
+      "direction": "BEARISH",
+      "emergency_stop": 24987.3164285714,
+      "entry_fill_price": 24969.64505995,
+      "entry_reference_price": 24969.73,
+      "entry_timeframe": "M1",
+      "exit_fill_price": 24935.91900111,
+      "exit_reason": "OPPOSING_MEANINGFUL_BOS",
+      "initial_volume": 0.21,
+      "logical_stop": 24932.15,
+      "margin_used_zar": 0.0,
+      "opened_at": 1784121840.0,
+      "opening_commission_zar": 0.0,
+      "opening_slippage_cost_zar": 0.3745856205,
+      "opening_spread_cost_zar": 8.5995,
+      "partials": [
+        {
+          "closed_volume": 0.21,
+          "costs": {
+            "commission": 0.0,
+            "slippage": 0.7670805156,
+            "spread": 17.199,
+            "swap": 0.0
+          },
+          "executable_fraction": 1.0,
+          "fill_price": 24935.91900111,
+          "gross_PL": 158.0985,
+          "net_PL": 140.1324194844,
+          "reason": "OPPOSING_MEANINGFUL_BOS",
+          "remaining_volume": 0.0,
+          "requested_fraction": 1.0
+        }
+      ],
+      "peak_r": 4.406539497,
+      "peak_unrealized_zar": 200.0599143795,
+      "planned_risk_zar": 168.66904243,
+      "position_id": "CANONICAL-PAPER-ZAR|POSITION|S1B-GER40Cash-20260804T112808-196b791da6|EVENT|000467",
+      "realized_zar": 148.7319194844,
+      "requested_volume": 0.7801754186,
+      "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_411",
+      "setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_411",
+      "status": "CLOSED",
+      "swap_zar": 0.0,
+      "symbol": "GER40Cash#",
+      "target_1": null,
+      "target_2": null,
+      "volume": 0.0
+    }
+  }
+]

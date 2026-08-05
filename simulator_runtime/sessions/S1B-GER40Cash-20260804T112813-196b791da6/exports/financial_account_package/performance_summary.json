@@ -1,0 +1,76 @@
+{
+  "average_loss_zar": 0.0,
+  "average_win_zar": 128.2885320549,
+  "by_session": [
+    {
+      "net_zar": 256.5770641098,
+      "sample_size": 2,
+      "session": "OVERLAP"
+    }
+  ],
+  "by_symbol": [
+    {
+      "net_zar": 256.5770641098,
+      "sample_size": 2,
+      "symbol": "GER40Cash#",
+      "win_rate": 100.0,
+      "wins": 2
+    }
+  ],
+  "costs": {
+    "by_symbol": {
+      "GER40Cash#": {
+        "commission": 0.0,
+        "slippage": 2.7959113455,
+        "spread": 49.14,
+        "swap": 0.0
+      }
+    },
+    "totals": {
+      "commission": 0.0,
+      "slippage": 2.7959113455,
+      "spread": 49.14,
+      "swap": 0.0,
+      "total": 51.9359113455
+    }
+  },
+  "ending_balance_zar": 1272.9570641098,
+  "ending_equity_zar": 1272.9570641098,
+  "execution_attempt_win_rate": 100.0,
+  "expectancy_zar": 128.2885320549,
+  "largest_loss_zar": 0.0,
+  "largest_win_zar": 139.9779442404,
+  "margin_call_count": 1,
+  "maximum_drawdown_percent": 10.4536551739,
+  "maximum_drawdown_zar": 128.1189,
+  "minimum_volume_blocks": 0,
+  "performance_is_not_guaranteed": true,
+  "profit_factor": null,
+  "return_percent": 27.295706411,
+  "risk": {
+    "attempts": 2,
+    "average_logical_risk_zar": 58.9269877277,
+    "maximum_emergency_risk_zar": 109.4191764866,
+    "maximum_logical_risk_zar": 72.2241016938
+  },
+  "sample_size": 2,
+  "sequences": [
+    {
+      "attempts": 1,
+      "costs_zar": 16.5471801306,
+      "gross_zar": 133.1463,
+      "net_zar": 116.5991198694,
+      "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381"
+    },
+    {
+      "attempts": 1,
+      "costs_zar": 18.1205557596,
+      "gross_zar": 158.0985,
+      "net_zar": 139.9779442404,
+      "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_411"
+    }
+  ],
+  "starting_capital_zar": 1000,
+  "stop_out_count": 0,
+  "total_net_profit_zar": 272.9570641098
+}

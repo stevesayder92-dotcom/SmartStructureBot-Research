@@ -1,0 +1,305 @@
+{
+  "case_metadata": {
+    "category_flags": [
+      "FIRST_FAILURE_VALID_REENTRY",
+      "MESSY_M1_BOS_REJECTED",
+      "VALID_M1_EARLY_ENTRY"
+    ],
+    "direction": "BEARISH",
+    "entry_time": 1784759820.0,
+    "entry_timeframe": "M1",
+    "historical_outcome_hidden_from_decisions": true,
+    "setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_1815",
+    "symbol": "US100Cash#"
+  },
+  "case_number": 1,
+  "checkpoint_frequency": 25,
+  "code_hash": "749ca773f4fb09176bcd4e28155287c5e370919b8a62113b5a88a091e3030050",
+  "config_hash": "1209887cd3c1e1c7221737f0fa50e87f79e7009977c922613a17a1fbd3494a31",
+  "created_at": "2026-08-01T20:13:50.961710+00:00",
+  "data_hash": "1397d80d2e0a3838fe22df0eb8dd02c4b932ba26a24b073094fec7f9eeb1cb91",
+  "dataset_validation": {
+    "m1": {
+      "causal_valid": true,
+      "duplicate_timestamps": 0,
+      "gaps_hidden": false,
+      "missing_columns": [],
+      "monotonic": true,
+      "owner": "SynchronizedM1ReplayCoordinator",
+      "published_gaps": [
+        {
+          "current_time": 1782954000.0,
+          "index": 586,
+          "previous_time": 1782950340.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1783040400.0,
+          "index": 1966,
+          "previous_time": 1783036740.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1783299600.0,
+          "index": 3101,
+          "previous_time": 1783108440.0,
+          "seconds": 191160.0
+        },
+        {
+          "current_time": 1783386000.0,
+          "index": 4481,
+          "previous_time": 1783382340.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1783472400.0,
+          "index": 5861,
+          "previous_time": 1783468740.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1783558800.0,
+          "index": 7241,
+          "previous_time": 1783555140.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1783645200.0,
+          "index": 8621,
+          "previous_time": 1783641540.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1783904400.0,
+          "index": 10001,
+          "previous_time": 1783727940.0,
+          "seconds": 176460.0
+        },
+        {
+          "current_time": 1783990800.0,
+          "index": 11381,
+          "previous_time": 1783987140.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1784077200.0,
+          "index": 12761,
+          "previous_time": 1784073540.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1784163600.0,
+          "index": 14141,
+          "previous_time": 1784159940.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1784250000.0,
+          "index": 15521,
+          "previous_time": 1784246340.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1784509200.0,
+          "index": 16901,
+          "previous_time": 1784332740.0,
+          "seconds": 176460.0
+        },
+        {
+          "current_time": 1784595600.0,
+          "index": 18281,
+          "previous_time": 1784591940.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1784682000.0,
+          "index": 19661,
+          "previous_time": 1784678340.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1784768400.0,
+          "index": 21041,
+          "previous_time": 1784764740.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1784854800.0,
+          "index": 22421,
+          "previous_time": 1784851140.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1785114000.0,
+          "index": 23801,
+          "previous_time": 1784937540.0,
+          "seconds": 176460.0
+        },
+        {
+          "current_time": 1785200400.0,
+          "index": 25181,
+          "previous_time": 1785196740.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1785286800.0,
+          "index": 26561,
+          "previous_time": 1785283140.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1785373200.0,
+          "index": 27941,
+          "previous_time": 1785369540.0,
+          "seconds": 3660.0
+        },
+        {
+          "current_time": 1785459600.0,
+          "index": 29321,
+          "previous_time": 1785455940.0,
+          "seconds": 3660.0
+        }
+      ],
+      "state": "VALID_CLOSED_SERIES",
+      "timezone": "UTC",
+      "unfinished_candles": 0,
+      "valid": true
+    },
+    "m5": {
+      "causal_valid": true,
+      "duplicate_timestamps": 0,
+      "gaps_hidden": false,
+      "missing_columns": [],
+      "monotonic": true,
+      "owner": "SynchronizedM1ReplayCoordinator",
+      "published_gaps": [
+        {
+          "current_time": 1784077200.0,
+          "index": 189,
+          "previous_time": 1784073300.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1784163600.0,
+          "index": 465,
+          "previous_time": 1784159700.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1784250000.0,
+          "index": 741,
+          "previous_time": 1784246100.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1784509200.0,
+          "index": 1017,
+          "previous_time": 1784332500.0,
+          "seconds": 176700.0
+        },
+        {
+          "current_time": 1784595600.0,
+          "index": 1293,
+          "previous_time": 1784591700.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1784682000.0,
+          "index": 1569,
+          "previous_time": 1784678100.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1784768400.0,
+          "index": 1845,
+          "previous_time": 1784764500.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1784854800.0,
+          "index": 2121,
+          "previous_time": 1784850900.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1785114000.0,
+          "index": 2397,
+          "previous_time": 1784937300.0,
+          "seconds": 176700.0
+        },
+        {
+          "current_time": 1785200400.0,
+          "index": 2673,
+          "previous_time": 1785196500.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1785286800.0,
+          "index": 2949,
+          "previous_time": 1785282900.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1785373200.0,
+          "index": 3225,
+          "previous_time": 1785369300.0,
+          "seconds": 3900.0
+        },
+        {
+          "current_time": 1785459600.0,
+          "index": 3501,
+          "previous_time": 1785455700.0,
+          "seconds": 3900.0
+        }
+      ],
+      "state": "VALID_CLOSED_SERIES",
+      "timezone": "UTC",
+      "unfinished_candles": 0,
+      "valid": true
+    },
+    "m5_closes_without_m1_close": [],
+    "missing_candles_are_never_filled": true,
+    "ohlc_errors": [],
+    "state": "VALID",
+    "timezone": "UTC",
+    "valid": true
+  },
+  "enabled_bug_rules": [
+    "PREFIX_STATE_MISMATCH",
+    "STATE_HASH_MISMATCH",
+    "MULTIPLE_ACTIONS_SAME_EVENT",
+    "ORDER_API_DETECTED",
+    "ENTRY_TOO_EARLY",
+    "STOP_USES_POST_ENTRY_DATA",
+    "REENTRY_BEFORE_EXTENSION_PROOF",
+    "SEVERE_GIVEBACK",
+    "WINNER_TO_LOSER_REVERSAL",
+    "ENGINE_DIRECTOR_CONFLICT"
+  ],
+  "enabled_shadows": [
+    "PURE_STRUCTURE_RUNNER",
+    "TP1_PARTIAL_PLUS_RUNNER",
+    "EARNED_OPPORTUNITY_MANAGER",
+    "M5_CONFIRMATION_REENTRY",
+    "M1_RESET_REENTRY"
+  ],
+  "end": 1784781420.0,
+  "event_count": 326,
+  "historical_closed_candle_replay": true,
+  "m1_range": {
+    "end_index": 21257,
+    "start_index": 20932
+  },
+  "m5_range": {
+    "end_index": 1887,
+    "start_index": 1822
+  },
+  "orders_enabled": false,
+  "performance_is_not_guaranteed": true,
+  "replay_session_id": "S1-CASE-01",
+  "simulator_version": "SMARTSTRUCTUREBOT_SIMULATOR_PHASE_S1",
+  "start": 1784758320.0,
+  "strategy_version": "SMARTSTRUCTUREBOT_SIMULATOR_BASELINE_V0_9",
+  "symbol": "US100Cash#",
+  "timezone": "UTC"
+}

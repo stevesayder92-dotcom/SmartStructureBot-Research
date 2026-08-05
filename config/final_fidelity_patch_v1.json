@@ -1,0 +1,25 @@
+{
+  "version": "FINAL_FIDELITY_PATCH_V1",
+  "research_only": true,
+  "order_execution": false,
+  "m1_quality_weights": {"counter_trend_clarity": 20, "trigger_significance": 15, "bos_quality": 20, "compression_to_expansion": 10, "entry_location": 15, "timing_advantage": 10, "market_cleanliness": 10},
+  "m1_grade_thresholds": {"A_PLUS_M1": 85, "A_M1": 70, "B_M1": 55},
+  "m1_risk_policy": {"A_PLUS_M1": "FULL_RESEARCH_RISK", "A_M1": "STANDARD_RESEARCH_RISK", "B_M1": "REDUCED_RESEARCH_RISK", "C_M1": "OBSERVE_ONLY"},
+  "meaningful_m1_swing_atr": 0.35,
+  "stale_trigger_candles": 30,
+  "overlap_warning_ratio": 0.65,
+  "bos_displacement_atr": 0.35,
+  "continuation_weights": {"progress": 0.25, "displacement": 0.20, "pullback_health": 0.20, "structural_progression": 0.20, "acceptance": 0.15},
+  "continuation_thresholds": {"STRONG": 80, "HEALTHY": 65, "WEAKENING": 45, "EXHAUSTION": 25},
+  "hysteresis_confirmations": 2,
+  "favourable_progress_r": 0.35,
+  "early_protection_r": 0.90,
+  "small_profit_lock_r": 0.10,
+  "elevated_giveback_r": 0.75,
+  "severe_giveback_r": 1.25,
+  "unacceptable_capture_ratio": 0.25,
+  "exhaustion_thresholds": {"CONFIRMED": 80, "HIGH": 65, "MEANINGFUL": 45, "EARLY": 25},
+  "partial_exit_research": true,
+  "runner_exit_policy": "STRUCTURE_OR_TARGET_SUPPORTED_EXHAUSTION"
+}
+

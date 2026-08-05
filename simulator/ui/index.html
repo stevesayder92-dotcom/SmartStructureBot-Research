@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SmartStructureBot · Realistic Paper Laboratory</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body class="mode-trader">
+  <header class="app-header">
+    <div class="brand-block"><div class="brand-mark">SS</div><div><strong>SmartStructureBot</strong><span>Realistic Paper Laboratory · Phase S1B</span></div></div>
+    <div id="healthStrip" class="health-strip" aria-live="polite"></div>
+    <div class="header-badges"><span class="badge research">HISTORICAL PAPER SIMULATION</span><span class="badge estimated">ESTIMATED COSTS DISCLOSED</span><span class="badge disabled">NO LIVE ORDERS · NO DEMO ORDERS</span></div>
+  </header>
+
+  <dialog id="accountDialog" class="account-dialog">
+    <form method="dialog" id="accountForm">
+      <div class="dialog-heading"><div><span class="eyebrow">Paper account configuration</span><h1>Choose the money reality</h1><p>Strategy signals remain identical. Account size changes execution feasibility only.</p></div><span class="badge disabled">PAPER ONLY</span></div>
+      <div class="config-grid">
+        <label>Account currency<input value="ZAR" disabled></label>
+        <label>Starting capital<select id="capitalPreset"><option value="500">R500</option><option value="1000" selected>R1,000</option><option value="2500">R2,500</option><option value="5000">R5,000</option><option value="custom">Custom</option></select></label>
+        <label>Custom capital<input id="customCapital" type="number" min="1" step="0.01" value="1000"></label>
+        <label>Risk model<select id="riskModel"><option>FIXED_PERCENTAGE_OF_CURRENT_BALANCE</option><option>FIXED_PERCENTAGE_OF_CURRENT_EQUITY</option><option>FIXED_RAND_AMOUNT</option><option>FIXED_MINIMUM_BROKER_VOLUME</option><option>GRADE_ADJUSTED_RESEARCH_RISK</option></select></label>
+        <label>
+        Risk %
+        <input
+            id="riskPercent"
+            type="number"
+            min="0.10"
+            max="25"
+            step="0.10"
+            value="15">
+        </label>
+        <label>Fixed risk (R)<input id="fixedRisk" type="number" min="0.01" step="0.01" value="10"></label>
+        <label>Maximum logical risk %<input id="maxRisk" type="number" min="0.01" step="0.1" value="2.0"></label>
+        <label>Maximum emergency risk %<input id="maxEmergencyRisk" type="number" min="0.01" step="0.1" value="2.5"></label>
+        <label>Leverage<select id="leverage"><option>50</option><option selected>100</option><option>200</option><option>500</option></select></label>
+        <label>Cost sensitivity<select id="costProfile"><option>IDEALIZED_CONTROL</option><option selected>NORMAL_ESTIMATED</option><option>STRESSED_COSTS</option></select></label>
+        <label>Spread model<select id="spreadModel"><option selected>AUTO_NATIVE_SESSION_FALLBACK</option><option>VOLATILITY_ADJUSTED_RESEARCH_SPREAD</option><option>FIXED_USER_SPREAD</option></select></label>
+        <label>Fixed spread points<input id="fixedSpread" type="number" min="0" step="0.1" value="10"></label>
+        <label>Slippage model<select id="slippageModel"><option selected>DETERMINISTIC_SEEDED</option><option>FIXED_AVERAGE_SLIPPAGE</option><option>VOLATILITY_AWARE_SLIPPAGE</option><option>NO_SLIPPAGE</option></select></label>
+        <label>Commission model<select id="commissionModel"><option selected>CONTRACT_SPECIFICATION</option><option>NO_COMMISSION</option></select></label>
+        <label>Swap model<select id="swapModel"><option selected>DISABLED</option><option>FIXED_DAILY_RESEARCH_RATE</option><option>SYMBOL_SPECIFICATION_RATE</option></select></label>
+        <label>Execution timing<select id="executionTiming"><option selected>BOS_CLOSE_PLUS_COSTS</option><option>NEXT_CANDLE_OPEN_PLUS_COSTS</option></select></label>
+        <label>Intrabar policy<select id="intrabarPolicy"><option selected>LOWER_TIMEFRAME_THEN_CONSERVATIVE_STOP_FIRST</option><option>CONSERVATIVE_STOP_FIRST</option><option>FLAG_AS_AMBIGUOUS</option></select></label>
+        <label class="check-label"><input id="compounding" type="checkbox" checked> Compounding on</label>
+        <label class="check-label danger-check"><input id="unsafeOverride" type="checkbox"> Unsafe minimum-volume research override</label>
+      </div>
+      <div class="disclosure"><strong>Normal estimated is the primary profile.</strong> Where native broker spreads, contract specifications or conversion history are unavailable, the simulator visibly uses documented research estimates. It never assumes USD equals ZAR.</div>
+      <div class="dialog-actions"><button id="applyAccount" class="button primary" type="button" value="apply">Apply paper account</button></div>
+    </form>
+  </dialog>
+
+  <main>
+    <section class="control-deck" aria-label="Replay controls">
+      <div class="session-controls">
+        <label>Replay session<select id="sessionSelect"></select></label>
+        <button id="loadButton" class="button primary">Load session</button>
+        <button id="accountButton" class="button">Paper account</button>
+        <button id="libraryButton" class="button">Data library</button>
+        <label>Mode<select id="modeSelect"><option value="simple">Simple</option><option value="trader" selected>Trader</option><option value="debug">Debug</option><option value="investor">Investor</option></select></label>
+        <label>View preset<select id="presetSelect"><option>CLEAN TRADING VIEW</option><option>ENTRY REVIEW</option><option>MANAGEMENT REVIEW</option><option>RE-ENTRY REVIEW</option><option>FULL DEBUG</option><option>INVESTOR PRESENTATION</option></select></label>
+      </div>
+      <div class="transport">
+        <button id="resetButton" class="icon-button" aria-label="Reset replay">↺</button>
+        <button id="backButton" class="icon-button" aria-label="Previous event">◀</button>
+        <button id="playButton" class="button primary" aria-label="Play or pause">Play</button>
+        <button id="forwardButton" class="icon-button" aria-label="Next event">▶</button>
+        <button id="significantButton" class="button">Next structural</button>
+        <button id="entryButton" class="button">Next entry</button>
+        <button id="exitButton" class="button">Next exit</button>
+        <button id="reentryButton" class="button">Next re-entry</button>
+        <button id="bugButton" class="button">Next flag</button>
+        <label>Speed<select id="speedSelect"><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option><option>5</option><option>10</option><option>25</option><option value="100">MAX</option></select></label>
+        <label>Jump to event<input id="jumpInput" type="number" min="0" value="0"></label><button id="jumpButton" class="button">Go</button>
+      </div>
+    </section>
+
+    <section id="accountBar" class="account-bar" aria-label="Paper account summary"></section>
+    <section id="narrativeBanner" class="narrative-banner" aria-live="polite"></section>
+
+    <section class="chart-toolbar">
+      <span>Wheel: time zoom · Drag: pan · Shift+wheel: price zoom · crosshair synchronized</span>
+      <button id="fitButton" class="button">Fit content</button><button id="resetViewButton" class="button">Reset view</button><button id="currentButton" class="button">Current candle</button>
+    </section>
+    <section class="chart-layout">
+      <article class="chart-panel"><header><div><span class="eyebrow">Parent structure</span><h2 id="m5Title">M5 chart</h2></div><div class="chart-state" id="m5State"></div></header><canvas id="m5Chart" aria-label="M5 synchronized closed-candle chart"></canvas><div id="m5Hover" class="hover-readout">Move across the chart for OHLC, bid, ask and spread.</div></article>
+      <article class="chart-panel"><header><div><span class="eyebrow">Execution structure</span><h2 id="m1Title">M1 chart</h2></div><div class="chart-state" id="m1State"></div></header><canvas id="m1Chart" aria-label="M1 synchronized closed-candle chart"></canvas><div id="m1Hover" class="hover-readout">Charts share event time and crosshair.</div></article>
+    </section>
+
+    <section class="layer-bar" aria-label="Chart layers"><details><summary>Chart layers</summary><div id="layerControls" class="toggle-grid"></div></details><button id="downloadButton" class="button">Export current event JSON</button></section>
+    <section id="tradeSummary" class="trade-summary"></section>
+
+    <section class="position-grid">
+      <article class="panel position-panel"><header class="panel-heading"><div><span class="eyebrow">Money now</span><h2>Active paper position</h2></div><span class="badge disabled">SIMULATED</span></header><div id="activePosition"></div></article>
+      <article class="panel ticket-panel"><header class="panel-heading"><div><span class="eyebrow">Execution evidence</span><h2>Latest paper ticket</h2></div></header><div id="paperTicket"></div></article>
+    </section>
+
+    <section class="thought-flow" aria-label="Bot decision flow">
+      <article><span>1 · SEE</span><strong id="thoughtSee">Waiting for replay</strong><small>Market structure and causal conditions</small></article>
+      <article><span>2 · THINK</span><strong id="thoughtThink">Waiting for engines</strong><small>Independent interpretations</small></article>
+      <article><span>3 · RECOMMEND</span><strong id="thoughtRecommend">No recommendation</strong><small>Supporting advice only</small></article>
+      <article class="commit"><span>4 · COMMIT</span><strong id="thoughtCommit">NO ACTION</strong><small>SystemDirector owns strategy action</small></article>
+    </section>
+    <section id="moneyStrip" class="money-strip"></section>
+
+    <section class="observability-grid">
+      <article class="panel brain-panel"><header class="panel-heading"><div><span class="eyebrow">Canonical state</span><h2>Bot brain</h2></div><span id="causalBadge" class="status-pass">Causal PASS</span></header><div id="brainGrid" class="brain-grid"></div></article>
+      <article class="panel director-panel"><header class="panel-heading"><div><span class="eyebrow">Only strategy authority</span><h2>Director committed action</h2></div></header><div id="directorDecision"></div></article>
+    </section>
+
+    <section class="panel equity-panel"><header class="panel-heading"><div><span class="eyebrow">Click a point to time travel</span><h2>Balance, equity and drawdown</h2></div><div id="equityLegend" class="legend"></div></header><canvas id="equityChart" aria-label="Paper account equity curve"></canvas></section>
+
+    <section class="panel trader-debug"><header class="panel-heading"><div><span class="eyebrow">Independent advice</span><h2>Engine recommendations</h2></div><span class="microcopy">Recommended ≠ committed</span></header><div class="table-wrap"><table><thead><tr><th>Engine</th><th>Recommendation</th><th>Priority</th><th>Confidence</th><th>Owner / price</th><th>Reason</th><th>Status</th></tr></thead><tbody id="recommendationRows"></tbody></table></div></section>
+
+    <section class="panel lab-panel"><header class="panel-heading"><div><span class="eyebrow">Independent economic simulations</span><h2>Canonical versus shadow money accounts</h2></div><span class="microcopy">Same signals, prices, spread and slippage seed</span></header><div class="table-wrap"><table><thead><tr><th>Profile</th><th>Balance</th><th>Equity</th><th>Floating</th><th>Drawdown</th><th>Action</th><th>Difference</th><th>Isolated</th></tr></thead><tbody id="shadowMoneyRows"></tbody></table></div></section>
+
+    <section id="dataLibraryPanel" class="panel data-library hidden">
+      <header class="panel-heading"><div><span class="eyebrow">Portable configured sources only</span><h2>Dynamic replay data library</h2></div><button id="closeLibrary" class="button">Close</button></header>
+      <div class="library-layout"><div class="table-wrap"><table><thead><tr><th>Symbol</th><th>M1 range</th><th>M5 range</th><th>Rows</th><th>Spread</th><th>Contract</th><th>Ready</th></tr></thead><tbody id="libraryRows"></tbody></table></div>
+      <form id="buildForm" class="build-form"><label>Symbol<select id="buildSymbol"></select></label><label>Start UTC<input id="buildStart" type="datetime-local"></label><label>End UTC<input id="buildEnd" type="datetime-local"></label><label>Context preload candles<input id="buildContext" type="number" min="30" max="1000" value="180"></label><label>Maximum events<input id="buildMaxEvents" type="number" min="1" max="5000" value="300"></label><button class="button primary" type="submit">Build replay session</button></form></div>
+      <div id="buildProgress" class="build-progress">Choose a symbol and date range. The browser cannot supply filesystem paths.</div>
+    </section>
+
+    <section class="lower-grid">
+      <article class="panel timeline-panel"><header class="panel-heading"><div><span class="eyebrow">Immutable strategy ledger</span><h2>Event timeline</h2></div><select id="timelineFilter"><option value="all">All events</option><option value="significant">Significant only</option><option value="trade">Trade events</option><option value="management">Management</option><option value="bugs">Bug flags</option></select></header><div id="timeline" class="timeline"></div></article>
+      <article class="panel story-panel"><header class="panel-heading"><div><span class="eyebrow">Market and money</span><h2>Trade story</h2></div></header><div id="tradeStory" class="story"></div></article>
+      <article class="panel flags-panel"><header class="panel-heading"><div><span class="eyebrow">Review prompts, not automatic truth</span><h2>Bug and cost flags</h2></div></header><div id="bugFlags" class="flags"></div></article>
+    </section>
+
+    <section class="debug-only debug-grid">
+      <article class="panel"><header class="panel-heading"><h2>State difference</h2></header><div class="diff-controls"><label>Event A<input id="diffA" type="number" min="0" value="0"></label><label>Event B<input id="diffB" type="number" min="0" value="1"></label><button id="diffButton" class="button">Compare A → B</button></div><pre id="stateDiff"></pre></article>
+      <article class="panel"><header class="panel-heading"><h2>Current immutable ReplayEvent</h2></header><pre id="rawEvent"></pre></article>
+      <article class="panel execution-ledger-panel"><header class="panel-heading"><h2>Execution ledger as of this event</h2></header><div class="table-wrap"><table><thead><tr><th>Time</th><th>Action</th><th>Volume</th><th>Fill</th><th>Costs</th><th>Net</th><th>Balance</th></tr></thead><tbody id="executionLedgerRows"></tbody></table></div></article>
+    </section>
+
+    <section class="panel review-panel"><header class="panel-heading"><div><span class="eyebrow">Separate manual ledger</span><h2>Steve review</h2></div><span id="reviewStatus" class="microcopy"></span></header><div class="review-grid"><label>Entry<select id="reviewEntry"><option>UNCERTAIN</option><option>ACCEPT</option><option>REJECT</option></select></label><label>Stop<select id="reviewStop"><option>UNCERTAIN</option><option>ACCEPT</option><option>REJECT</option></select></label><label>Management<select id="reviewManagement"><option>UNCERTAIN</option><option>ACCEPT</option><option>REJECT</option></select></label><label>Re-entry<select id="reviewReentry"><option>UNCERTAIN</option><option>ACCEPT</option><option>REJECT</option></select></label><label>Bug flag<select id="reviewFlag"><option>UNREVIEWED</option><option>CONFIRMED_BUG</option><option>VALID_STRATEGY_BEHAVIOUR</option><option>VALID_MARKET_LOSS</option><option>NEEDS_MORE_EVIDENCE</option><option>FIXED_IN_CANDIDATE</option></select></label><label class="notes-label">Notes<textarea id="reviewNotes" rows="3" placeholder="Describe what the bot or paper broker handled correctly or incorrectly."></textarea></label><button id="saveReview" class="button primary">Save review</button></div></section>
+  </main>
+
+  <footer><strong>Historical paper simulation.</strong> Estimated costs where broker data is unavailable. No live or demo orders. Past results do not guarantee future performance. Shortcuts: Space play/pause · ←/→ event · Shift+→ structural · E entry · X exit · R re-entry · B flag · Home/End</footer>
+  <script src="app.js"></script>
+</body>
+</html>

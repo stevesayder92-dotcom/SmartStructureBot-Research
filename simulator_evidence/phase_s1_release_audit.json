@@ -1,0 +1,141 @@
+{
+  "strategy_version": "SMARTSTRUCTUREBOT_SIMULATOR_BASELINE_V0_9",
+  "simulator_version": "PHASE_S1",
+  "curated_sessions": 12,
+  "total_events": 999,
+  "unique_state_hashes": 999,
+  "reentry_sessions": [
+    "S1-CASE-01",
+    "S1-CASE-60"
+  ],
+  "trade_51_present": true,
+  "integrity_fail_flags": [],
+  "orders_called": 0,
+  "sessions": [
+    {
+      "session_id": "S1-CASE-02",
+      "events": 60,
+      "build_seconds": 88.7164,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-02\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-09",
+      "events": 60,
+      "build_seconds": 92.2411,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-09\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-64",
+      "events": 60,
+      "build_seconds": 166.3177,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-64\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-81",
+      "events": 13,
+      "build_seconds": 200.1865,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-81\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-01",
+      "events": 326,
+      "build_seconds": 383.9114,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [
+        75
+      ],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-01\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-60",
+      "events": 120,
+      "build_seconds": 251.6837,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [
+        86
+      ],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-60\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-19",
+      "events": 60,
+      "build_seconds": 104.7098,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-19\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-45",
+      "events": 60,
+      "build_seconds": 135.499,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-45\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-10",
+      "events": 60,
+      "build_seconds": 106.558,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-10\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-69",
+      "events": 60,
+      "build_seconds": 181.1716,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-69\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-34",
+      "events": 60,
+      "build_seconds": 129.3389,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-34\\exports\\full_replay_session.zip"
+    },
+    {
+      "session_id": "S1-CASE-47",
+      "events": 60,
+      "build_seconds": 113.5357,
+      "duplicate_state_hashes": 0,
+      "integrity_fail_flags": [],
+      "reentry_events": [],
+      "orders_called": 0,
+      "full_replay_export": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_Simulator_PhaseS1_20260801\\simulator_evidence\\sessions\\S1-CASE-47\\exports\\full_replay_session.zip"
+    }
+  ],
+  "verdict": "PASS"
+}

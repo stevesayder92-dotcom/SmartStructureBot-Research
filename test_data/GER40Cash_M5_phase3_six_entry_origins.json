@@ -1,0 +1,62 @@
+[
+  {
+    "sequence": 1,
+    "setup_id": "GER40Cash#|5|BULLISH|BOS_93|PB_26",
+    "direction": "BULLISH",
+    "origin_trend_bos": 93,
+    "initial_pullback_start": 26,
+    "current_pullback_end": 79,
+    "entry_index": 102,
+    "requires_manual_origin_review": true
+  },
+  {
+    "sequence": 2,
+    "setup_id": "GER40Cash#|5|BULLISH|BOS_153|PB_127",
+    "direction": "BULLISH",
+    "origin_trend_bos": 153,
+    "initial_pullback_start": 127,
+    "current_pullback_end": 175,
+    "entry_index": 188,
+    "requires_manual_origin_review": true
+  },
+  {
+    "sequence": 3,
+    "setup_id": "GER40Cash#|5|BEARISH|BOS_215|PB_99",
+    "direction": "BEARISH",
+    "origin_trend_bos": 215,
+    "initial_pullback_start": 99,
+    "current_pullback_end": 201,
+    "entry_index": 216,
+    "requires_manual_origin_review": true
+  },
+  {
+    "sequence": 4,
+    "setup_id": "GER40Cash#|5|BULLISH|BOS_271|PB_206",
+    "direction": "BULLISH",
+    "origin_trend_bos": 271,
+    "initial_pullback_start": 206,
+    "current_pullback_end": 256,
+    "entry_index": 273,
+    "requires_manual_origin_review": true
+  },
+  {
+    "sequence": 5,
+    "setup_id": "GER40Cash#|5|BEARISH|BOS_249|PB_233",
+    "direction": "BEARISH",
+    "origin_trend_bos": 249,
+    "initial_pullback_start": 233,
+    "current_pullback_end": 284,
+    "entry_index": 296,
+    "requires_manual_origin_review": true
+  },
+  {
+    "sequence": 6,
+    "setup_id": "GER40Cash#|5|BEARISH|BOS_334|PB_278",
+    "direction": "BEARISH",
+    "origin_trend_bos": 334,
+    "initial_pullback_start": 278,
+    "current_pullback_end": 315,
+    "entry_index": 337,
+    "requires_manual_origin_review": true
+  }
+]

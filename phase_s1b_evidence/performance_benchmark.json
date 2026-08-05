@@ -1,0 +1,10 @@
+{
+  "base_events": 40,
+  "build_seconds": 123.728,
+  "dynamic_events": 8,
+  "orders_called": 0,
+  "sessions_built": 3,
+  "simulator_version": "SMARTSTRUCTUREBOT_SIMULATOR_PHASE_S1B_REALISTIC_PAPER_V1",
+  "trade51_events": 40,
+  "visual_scenarios": 20
+}

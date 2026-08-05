@@ -1,0 +1,43 @@
+{
+  "strategy_version": "SMARTSTRUCTUREBOT_SIMULATOR_BASELINE_V0_9",
+  "simulator_version": "SMARTSTRUCTUREBOT_SIMULATOR_PHASE_S1B_REALISTIC_PAPER_V1",
+  "timezone": "UTC",
+  "checkpoint_frequency": 25,
+  "default_speed": 1.0,
+  "engine_sensitivity": 3,
+  "htf_policy": "STRICT_2_OF_3_H1_M30_M15",
+  "allow_single_strong_htf": false,
+  "max_visible_m1": 240,
+  "max_visible_m5": 120,
+  "mode": "TRADER",
+  "enabled_shadows": [
+    "PURE_STRUCTURE_RUNNER",
+    "TP1_PARTIAL_PLUS_RUNNER",
+    "EARNED_OPPORTUNITY_MANAGER",
+    "M5_CONFIRMATION_REENTRY",
+    "M1_RESET_REENTRY",
+    "PROTECT_WINNER_FROM_LOSS"
+  ],
+  "enabled_bug_rules": [
+    "PREFIX_STATE_MISMATCH",
+    "STATE_HASH_MISMATCH",
+    "MULTIPLE_ACTIONS_SAME_EVENT",
+    "ORDER_API_DETECTED",
+    "ENTRY_TOO_EARLY",
+    "STOP_USES_POST_ENTRY_DATA",
+    "REENTRY_BEFORE_EXTENSION_PROOF",
+    "SEVERE_GIVEBACK",
+    "WINNER_TO_LOSER_REVERSAL",
+    "ENGINE_DIRECTOR_CONFLICT",
+    "RISK_EXCEEDS_CONFIG",
+    "EMERGENCY_RISK_EXCEEDS_CAP",
+    "INSUFFICIENT_MARGIN",
+    "MINIMUM_VOLUME_TOO_LARGE",
+    "SPREAD_ABNORMALLY_HIGH",
+    "SLIPPAGE_ABNORMALLY_HIGH",
+    "PARTIAL_NOT_EXECUTABLE",
+    "COSTS_ERASED_EDGE",
+    "ACCOUNT_STOP_OUT",
+    "CURRENCY_CONVERSION_MISSING"
+  ]
+}

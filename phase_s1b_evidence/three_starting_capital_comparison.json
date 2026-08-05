@@ -1,0 +1,38 @@
+[
+  {
+    "ending_balance_zar": 494.6371614429,
+    "ending_equity_zar": 494.6371614429,
+    "execution_ledger_rows": 4,
+    "minimum_volume_blocks": 0,
+    "orders_called": 0,
+    "realized_pl_zar": -5.3628385571,
+    "return_percent": -1.0725677114,
+    "starting_capital_zar": 500,
+    "strategy_event_hash": "f06d318fbbc031b99618b2b64b820c4a1cd8933b1470fc4afa2f503d9793710e",
+    "total_costs_zar": 0.8213014142
+  },
+  {
+    "ending_balance_zar": 983.9114843288,
+    "ending_equity_zar": 983.9114843288,
+    "execution_ledger_rows": 4,
+    "minimum_volume_blocks": 0,
+    "orders_called": 0,
+    "realized_pl_zar": -16.0885156712,
+    "return_percent": -1.6088515671,
+    "starting_capital_zar": 1000,
+    "strategy_event_hash": "f06d318fbbc031b99618b2b64b820c4a1cd8933b1470fc4afa2f503d9793710e",
+    "total_costs_zar": 2.4639042426
+  },
+  {
+    "ending_balance_zar": 4914.194583087,
+    "ending_equity_zar": 4914.194583087,
+    "execution_ledger_rows": 4,
+    "minimum_volume_blocks": 0,
+    "orders_called": 0,
+    "realized_pl_zar": -85.805416913,
+    "return_percent": -1.7161083383,
+    "starting_capital_zar": 5000,
+    "strategy_event_hash": "f06d318fbbc031b99618b2b64b820c4a1cd8933b1470fc4afa2f503d9793710e",
+    "total_costs_zar": 13.1408226274
+  }
+]

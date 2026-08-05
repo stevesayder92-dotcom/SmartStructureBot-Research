@@ -1,0 +1,16 @@
+{
+  "title": "SmartStructureBot honest prototype demonstration",
+  "primary_session": "S1-CASE-02",
+  "risk_discipline_session": "S1-CASE-10",
+  "auto_pause_events": [
+    "RETRACEMENT_QUALIFIED",
+    "M1_ENTRY_READY",
+    "M5_ENTRY_READY",
+    "PROTECTION_MOVED",
+    "FIRST_ATTEMPT_EXITED",
+    "REENTRY_OPENED",
+    "OPPOSING_BOS_EXIT"
+  ],
+  "disclaimer": "Historical research replay. No live orders. Performance is not guaranteed.",
+  "unsupported_profitability_claims": false
+}

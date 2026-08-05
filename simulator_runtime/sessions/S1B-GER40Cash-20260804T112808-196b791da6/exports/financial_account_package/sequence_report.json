@@ -1,0 +1,16 @@
+[
+  {
+    "attempts": 1,
+    "costs_zar": 16.4665171335,
+    "gross_zar": 133.1463,
+    "net_zar": 116.6797828665,
+    "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381"
+  },
+  {
+    "attempts": 1,
+    "costs_zar": 17.9660805156,
+    "gross_zar": 158.0985,
+    "net_zar": 140.1324194844,
+    "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_411"
+  }
+]

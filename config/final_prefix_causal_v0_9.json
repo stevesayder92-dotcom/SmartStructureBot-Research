@@ -1,0 +1,20 @@
+{
+  "version": "SMARTSTRUCTUREBOT_SIMULATOR_BASELINE_V0_9",
+  "mode": "RESEARCH",
+  "order_execution": false,
+  "prefix_causality_required": true,
+  "swing_ledger_immutable": true,
+  "same_timestamp_tie_break": "PREFER_PARENT_M5",
+  "parent_expiry_minutes": 360,
+  "meaningful_reset_atr": 0.35,
+  "m1_trigger_freshness_candles": 10,
+  "m5_trigger_freshness_candles": 12,
+  "maximum_reentries": 1,
+  "max_emergency_account_risk": 1.25,
+  "selected_risk_model": "SIZE_FROM_EMERGENCY_STOP",
+  "causal_tp1_wick_fraction": 0.4,
+  "causal_tp1_close_fraction": 0.35,
+  "causal_tp1_acceptance_fraction": 0.25,
+  "causal_tp1_rejection_fraction": 0.5,
+  "maximum_partial_events": 1
+}

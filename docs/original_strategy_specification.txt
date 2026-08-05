@@ -1,0 +1,1572 @@
+1. Project identity
+
+Project name: SmartStructureBot
+Platform: Python + MetaTrader 5
+Primary purpose: Fully automated market-structure continuation trading system.
+
+The system is not primarily a generic retracement detector, indicator, or pattern scanner.
+
+Its real objective is:
+
+Identify the main market trend
+→ detect a counter-trend move
+→ detect when that counter-trend fails
+→ enter immediately when the main trend resumes
+→ manage the position using structure
+→ learn which instruments, sessions, setups, and management rules perform best
+
+The central strategic insight is:
+
+Failed retracement BOS
+=
+Retracement finished
+=
+Trend continuation resumed
+=
+Entry candle
+
+The bot must not wait until the whole retracement has visually completed and then enter late.
+
+2. Instruments and timeframes
+Primary instruments
+GOLD#
+US100Cash#
+US30Cash#
+GER40Cash#
+OILCash#
+
+The exact broker symbols may have suffixes such as #.
+
+Higher-timeframe context
+H1
+M30
+M15
+
+These are used to establish market direction and broader structure.
+
+A clear trend may be accepted from any of these if the structure is sufficiently clean.
+
+Entry timeframes
+M5 = primary entry timeframe
+M1 = fallback / refinement timeframe
+
+Operational rule:
+
+Use M5 first.
+
+If price reaches the expected pullback area but no clean M5 continuation BOS appears,
+inspect M1 for the failed-retracement BOS.
+
+If the trade was entered from M1 and later M5 confirms the same continuation,
+management may transition toward M5 structure rules.
+3. Trading sessions
+
+The bot should ultimately trade only:
+
+London session
+New York session
+London–New York overlap
+
+Session performance must later be measured independently.
+
+The bot should not assume every instrument performs equally in every session.
+
+4. Market structure hierarchy
+
+The system uses several structural layers.
+
+Typical conceptual hierarchy:
+
+Master / major structure
+ATR / tradeable internal structure
+Flow / micro structure
+
+These layers must not be treated as interchangeable.
+
+Master structure
+
+Purpose:
+
+Define the dominant market direction and phase.
+
+It should represent meaningful market swings, not every small fluctuation.
+
+ATR / tradeable structure
+
+Purpose:
+
+Locate meaningful tradeable swings,
+BOS events,
+protected structure,
+pullbacks,
+and continuation triggers.
+Flow / micro structure
+
+Purpose:
+
+Observe lower-level movement,
+internal sequencing,
+and possible early confirmation.
+
+Flow structure may assist decisions but should not override valid master context by itself.
+
+5. Swing detection rules
+
+The bot should not classify every wick or spike as meaningful structure.
+
+Initial swing candidate
+
+A common candidate model is a validated fractal:
+
+Swing high
+
+A candle high that exceeds the highs on both sides.
+
+For a five-candle fractal:
+
+candidate high > highs of previous 2 candles
+candidate high > highs of next 2 candles
+Swing low
+candidate low < lows of previous 2 candles
+candidate low < lows of next 2 candles
+Candidate versus locked swing
+
+A fractal is only a temporary turning point.
+
+It becomes structurally meaningful when subsequent price action validates it.
+
+Conceptually:
+
+A potential swing low becomes meaningful when price moves upward
+and breaks relevant opposing structure.
+
+A potential swing high becomes meaningful when price moves downward
+and breaks relevant opposing structure.
+ATR filtering
+
+ATR should help remove insignificant noise.
+
+However:
+
+ATR filtering must reduce noise,
+not destroy valid early continuation structure.
+
+The system must preserve sufficiently meaningful mini-swings needed for failed-retracement entries.
+
+6. Structure classification
+
+Highs and lows are classified as:
+
+HH = Higher High
+HL = Higher Low
+LH = Lower High
+LL = Lower Low
+Bullish structure
+
+Typical confirmation:
+
+HH + HL sequencing
+
+Strong confirmation may include:
+
+3 HH and 2 HL
+
+A clean market may sometimes be accepted with:
+
+2 HH and 1 HL
+
+provided broader context supports bullish direction.
+
+Bearish structure
+LH + LL sequencing
+
+The bot must distinguish between:
+
+main-trend structure
+counter-trend structure
+temporary compression
+noise
+
+A single local HH does not automatically mean the whole market is bullish.
+
+A single local LL does not automatically mean the whole market is bearish.
+
+7. Trend context
+
+Trend should be determined from coherent structure, not merely the most recent candle or swing.
+
+Valid output examples:
+
+BULLISH
+BEARISH
+RANGING
+UNKNOWN
+
+Trend context should include confidence and phase information.
+
+Examples of market phases already used:
+
+BULLISH_EXPANSION
+BULLISH_COMPRESSION
+BEARISH_EXPANSION
+BEARISH_COMPRESSION
+CHOCH_WARNING
+CONSOLIDATION
+Important rule
+
+A local counter-trend move must not automatically flip the higher-timeframe trend.
+
+Example:
+
+HTF trend = BEARISH
+Local bullish HH/HL sequence = bullish pullback
+not automatically a bullish market
+8. Break of Structure definition
+
+This is one of the most important rules.
+
+BOS requires a candle-body close
+
+A BOS occurs when a candle body closes beyond a meaningful structure level.
+
+Bullish BOS
+Candle body closes above the relevant swing high / seller structure.
+Bearish BOS
+Candle body closes below the relevant swing low / buyer structure.
+Wicks do not count
+A wick through structure is not a confirmed BOS.
+One candle is enough
+
+A valid BOS does not require several confirmation candles.
+
+One candle body close can confirm the break.
+BOS must know what it broke
+
+Every BOS event should record:
+
+direction
+candle index
+break price
+broken structure index
+broken structure type
+broken structure level
+body-close confirmation
+role
+quality
+importance
+trend alignment
+
+Possible BOS roles include:
+
+TREND_BOS
+ENTRY_BOS
+FAILED_RETRACEMENT_BOS
+CHOCH
+EXTENSION_BOS
+NEW_SETUP_BOS
+
+These roles must not be mixed together.
+
+9. Core strategy: trend continuation after failed retracement
+
+This is the most important section.
+
+The strategy does not enter merely because a retracement exists.
+
+It enters because the counter-trend move fails.
+
+Bullish-trend setup
+1. Higher-timeframe/main context is bullish.
+2. Price begins moving downward against the bullish trend.
+3. The bearish pullback creates local bearish structure, such as LH and/or LL.
+4. The bot identifies the relevant pullback high / mini-protected high.
+5. Buyers return.
+6. A candle body closes above that relevant pullback high.
+7. That break proves the bearish counter-trend failed.
+8. The BOS candle is the bullish entry candle.
+
+In compact form:
+
+Bullish trend
+→ bearish pullback
+→ bearish counter-structure
+→ counter-structure fails
+→ body close above pullback LH/high
+→ BUY on BOS candle close
+Bearish-trend setup
+1. Higher-timeframe/main context is bearish.
+2. Price begins moving upward against the bearish trend.
+3. The bullish pullback creates local bullish structure, such as HH and/or HL.
+4. The bot identifies the relevant pullback low / mini-protected low.
+5. Sellers return.
+6. A candle body closes below that relevant pullback low.
+7. That break proves the bullish counter-trend failed.
+8. The BOS candle is the bearish entry candle.
+
+Compact form:
+
+Bearish trend
+→ bullish pullback
+→ bullish counter-structure
+→ counter-structure fails
+→ body close below pullback HL/low
+→ SELL on BOS candle close
+10. Retracement start
+
+The retracement should not be detected only after a huge move has already occurred.
+
+A counter-move may begin when price first produces credible structure against the dominant trend.
+
+In a bearish main trend
+
+A bullish pullback may be considered active when local bullish intent appears, such as:
+
+price breaks a relevant local bearish structure upward
+or
+creates meaningful bullish HH/HL behaviour
+In a bullish main trend
+
+A bearish pullback may begin when:
+
+price breaks relevant local bullish structure downward
+or
+creates meaningful bearish LH/LL behaviour
+
+The bot should not require an unnecessarily large number of counter-structure points before acknowledging a pullback.
+
+11. Retracement maturity
+
+Waiting for two or more counter-structure points in every case can create late entries and missed trades.
+
+Therefore:
+
+One meaningful counter-structure point may be enough,
+but only when the continuation BOS is strong and convincing.
+
+Recommended logic:
+
+2+ valid counter-structure points
+→ normal confirmation requirements
+
+1 valid counter-structure point
+→ allowed only with stronger BOS quality and momentum
+
+The system should be:
+
+slightly aggressive,
+but not reckless
+
+It should not wait unnecessarily, but it must reject weak first bounces.
+
+12. Retracement end
+
+This must be unambiguous.
+
+The retracement ends on the failed-retracement BOS candle.
+
+It must not end tens of candles after the entry.
+
+Therefore:
+
+counter_move_end_index
+=
+entry_bos_index
+
+The old retracement engine may still describe the broader pullback for analysis, but it must not control the final execution timing.
+
+13. Entry timing
+
+Entry should happen:
+
+immediately at the close of the failed-retracement BOS candle
+
+Do not wait for:
+
+another confirmation candle
+a retest
+the full retracement zone to finish
+a second BOS
+a later trend BOS
+
+unless the strategy explicitly adds such a mode later.
+
+Entry price
+
+The intended entry is based on the BOS candle close.
+
+The broken trigger level is not the entry price.
+
+Example:
+
+Trigger level = structure level broken
+Entry price = BOS candle close / executable market price after close
+
+The stored break_price must be checked carefully.
+
+It should not accidentally use:
+
+max(open, close)
+min(open, close)
+
+when the intended execution price is the actual candle close.
+
+For live trading, execution will occur at the first available market price after the BOS candle closes, including spread and slippage.
+
+14. Entry direction
+Bullish failed-retracement BOS → BUY
+Bearish failed-retracement BOS → SELL
+
+The system must never invert direction because a local counter-trend structure was detected.
+
+15. BOS strength and momentum
+
+A structural close alone may be technically valid but commercially weak.
+
+The system should score the continuation candle using:
+
+candle direction
+body size
+range versus ATR
+range versus recent average range
+body-to-range ratio
+close location within candle
+break distance beyond trigger
+wick size
+engulfing behaviour
+impulse speed
+follow-through potential
+
+Suggested classifications:
+
+WEAK_BOS
+VALID_BOS
+STRONG_BOS
+EXPLOSIVE_BOS
+
+Entry policy:
+
+WEAK_BOS → reject
+VALID_BOS → possibly accept with mature pullback
+STRONG_BOS → accept
+EXPLOSIVE_BOS → accept, subject to spread/slippage risk
+16. Impulsive versus corrective movement
+
+The bot must distinguish market intent.
+
+Impulsive movement
+
+Characteristics may include:
+
+large bodies
+strong directional closes
+ATR expansion
+little overlap
+fast displacement
+multiple structures taken quickly
+limited opposing wick rejection
+Corrective movement
+
+Characteristics may include:
+
+small bodies
+heavy overlap
+alternating candles
+weak closes
+slower progress
+compression
+frequent minor swings
+
+A continuation BOS should preferably be impulsive relative to the corrective pullback it ends.
+
+This relationship matters more than raw candle size alone.
+
+17. Compression awareness
+
+A human may see one pullback where code sees many tiny retracements and continuations.
+
+The system should merge micro-noise into one compression sequence when:
+
+price overlaps heavily
+range contracts
+mini BOS events lack displacement
+swings remain tightly clustered
+no meaningful expansion occurs
+
+Compression should not repeatedly reset or generate multiple entries from the same unresolved setup.
+
+18. Protected structure
+
+There are two important concepts:
+
+master/live structure
+decision protection
+
+These must not be confused.
+
+Bullish trend protection
+
+The meaningful protected structure is usually:
+
+the last defended HL before a confirmed bullish continuation BOS
+Bearish trend protection
+
+Usually:
+
+the last defended LH before a confirmed bearish continuation BOS
+Important protection rule
+
+Protected structure should not jump to every newly printed swing.
+
+It should update only when the market proves that the newer swing truly caused or defended meaningful continuation.
+
+Protection use
+
+Protected structure supports:
+
+trend invalidation
+stop placement
+pullback validity
+risk calculation
+trade management
+trailing
+re-entry logic
+Decision protection engine
+
+The current system may score candidates by:
+
+correct type
+hierarchy protection
+protected-candidate flag
+liquidity relevance
+decision weight
+distance before BOS
+recency
+structural role
+
+Example output:
+
+Protection Score
+Protection Grade
+Protection Confidence
+Candidate Count
+Selected Reason
+
+Codex and Claude must inspect whether the selected protected point existed before the relevant BOS and whether future data influenced selection.
+
+19. No future-data leakage
+
+This is a critical requirement.
+
+At every historical candle i, the system may use only information available at or before i.
+
+Forbidden examples:
+
+using later candles to classify an earlier entry
+choosing a swing because future price later validated it
+selecting the best continuation from the full 400-candle window
+using a future retracement end to validate an earlier BOS
+using final trend context to judge trades that occurred before that context was known
+
+Every event should ideally contain:
+
+detected_at_index
+confirmed_at_index
+source_structure_index
+
+Backtests must process candles sequentially.
+
+No full-dataset hindsight should influence historical entries.
+
+This is one of the highest-priority audit items.
+
+20. Active setup ownership
+
+There should be one authoritative owner/director for each active setup.
+
+The system must avoid several engines independently deciding:
+
+trend
+pullback
+entry
+protected structure
+final BOS
+
+Recommended ownership:
+
+Director / orchestrator owns lifecycle and phase transitions.
+
+Structure engines produce observations.
+
+Continuation Engine owns failed-retracement status and candidate entry BOS.
+
+Market Decision Judge decides trade permission.
+
+Execution Intelligence chooses execution/risk plan.
+
+Trade Brain owns final action.
+
+Trade Lifecycle owns the open trade.
+
+There should be only one final entry object.
+
+21. Old retracement engine versus Continuation Engine
+
+The old retracement system may remain for context and comparison.
+
+It may describe:
+
+pullback start
+pullback depth
+counter structures
+quality
+broader retracement zone
+
+However:
+
+It must not override the Continuation Engine’s failed-retracement entry.
+
+The final trading decision must come from the authoritative current continuation state.
+
+Old and new entry values must not silently disagree.
+
+If they disagree, the report must show:
+
+context entry
+continuation entry
+selected final entry
+selection reason
+22. Continuation Engine state machine
+
+Recommended states:
+
+NO_TRADE
+TREND_EXPANDING
+COUNTER_MOVE_STARTED
+COUNTER_MOVE_ACTIVE
+COUNTER_MOVE_WEAKENING
+FAILED_RETRACEMENT_BOS
+ENTRY_READY
+BLOCKED_CHOCH_WARNING
+INVALIDATED
+EXPIRED
+CONSUMED
+
+Suggested transition:
+
+Trend valid
+→ counter-move begins
+→ relevant counter structure forms
+→ counter-trend weakens/fails
+→ continuation BOS body close
+→ ENTRY_READY
+→ setup consumed after execution
+
+The same historical setup must not remain entry-ready indefinitely.
+
+23. CHOCH handling
+
+CHOCH_WARNING indicates structural risk.
+
+It should not automatically be treated exactly like normal expansion.
+
+Recommended policy:
+
+CHOCH_WARNING
+→ block new entries by default
+or
+→ require substantially higher confirmation
+
+The code must not approve a normal-risk trade during CHOCH merely because other scores are high, unless explicitly designed.
+
+24. Entry quality
+
+Current labels may include:
+
+A_ENTRY
+B_ENTRY
+REJECT
+
+Potential richer hierarchy later:
+
+A_PLUS
+A
+B_PLUS
+B
+C
+REJECT
+
+Entry quality should be based on real components, not arbitrary points.
+
+Each score should be explainable.
+
+Example:
+
+counter structure quality
+BOS body strength
+ATR expansion
+close strength
+break distance
+trend alignment
+protected swing relevance
+pullback maturity
+compression condition
+session condition
+spread condition
+25. Acceptance Engine
+
+The Acceptance Engine asks whether price truly accepted beyond the broken structure.
+
+Potential evidence:
+
+close decisively beyond level
+limited immediate rejection
+follow-through
+no instant close back inside structure
+sufficient body commitment
+
+A low acceptance score must matter.
+
+Current concern:
+
+Acceptance may score around 32 / D
+while total probability remains above 82 and trade is allowed.
+
+Codex and Claude must inspect whether weighting allows strong components to hide a dangerously weak acceptance score.
+
+Possible rule:
+
+Acceptance below hard minimum
+→ block trade
+
+or
+
+Acceptance below soft threshold
+→ reduce risk / demand stronger continuation
+26. Impulse Engine
+
+The Impulse Engine should measure whether the BOS and continuation move have real displacement.
+
+Possible inputs:
+
+range expansion
+body expansion
+velocity
+distance covered
+number of candles
+overlap reduction
+wick quality
+ATR multiple
+follow-through
+
+Impulse must not be confused with acceptance.
+
+A large candle can be impulsive but rejected.
+
+A modest candle can be accepted and continue cleanly.
+
+27. Market Decision Judge
+
+The Judge combines several components:
+
+Trend
+Protection
+Pullback
+Continuation
+Impulse
+Acceptance
+
+Typical output:
+
+Probability Score
+Probability Grade
+Decision Label
+Allow Trade
+Risk Mode
+component scores
+component grades
+Critical scoring rule
+
+A weighted average alone may be dangerous.
+
+Some components should use veto thresholds.
+
+Example:
+
+If trend invalid → reject
+If protection missing → reject or reduce risk
+If continuation invalid → reject
+If acceptance catastrophically low → reject
+If CHOCH warning → reject or special mode
+
+Strong trend and protection must not automatically overpower a failed entry condition.
+
+28. Execution Intelligence
+
+Execution Intelligence receives the approved setup and creates an execution plan.
+
+Typical outputs:
+
+Execution Allowed
+Action
+Direction
+Entry Index
+Entry Price
+Risk Percent
+Risk Mode
+Stop Style
+Trail Style
+Management Mode
+Re-entry Allowed
+Execution Reason
+
+Current example modes:
+
+NORMAL_RISK
+REDUCED_RISK
+NO_TRADE
+
+Execution must verify that:
+
+entry is current
+entry has not expired
+entry is not from stale historical data
+spread is acceptable
+session is allowed
+position limits permit trade
+29. Risk management
+
+Earlier examples used around:
+
+1.5% risk
+
+More recent execution tests may use:
+
+0.75%
+
+The final risk model should be configurable.
+
+Risk should depend on:
+
+account balance
+instrument
+stop distance
+tick value
+volume step
+entry quality
+judge probability
+session
+spread
+drawdown state
+
+The bot must calculate lot size from actual monetary risk.
+
+Never use a fixed lot without validating risk.
+
+30. Stop-loss rules
+M1 entries
+
+The intended structure rule is:
+
+Stop is based on the relevant swing high/low candle close.
+
+A wick through that level does not automatically stop the trade.
+
+Only a candle BODY CLOSE beyond the invalidation level confirms stop/invalidation.
+
+For BUY:
+
+body close below protected low / setup invalidation structure
+
+For SELL:
+
+body close above protected high / setup invalidation structure
+M5 entries
+
+The M5 stop should be more tolerant because M5 contains larger intrabar noise.
+
+Use:
+
+ATR-adjusted protection around the relevant pre-BOS protected swing
+
+A small body close barely beyond a minor level should not automatically invalidate if the configured ATR/body-close logic says otherwise.
+
+Live broker reality
+
+MT5 hard stops are triggered by price, including wicks.
+
+Therefore the architecture may need:
+
+broker emergency stop far enough away
++
+software-managed body-close invalidation
+
+This distinction must be explicitly coded and tested.
+
+31. Stop placement structure
+
+The stop should be based on the structure that invalidates the setup.
+
+Not simply:
+
+fixed ATR from entry
+nearest random swing
+latest low/high regardless of role
+
+The system should store:
+
+invalidation structure type
+invalidation structure index
+body invalidation level
+emergency broker stop
+logical stop condition
+32. Trailing rules
+
+Primary preference is structure-based trailing rather than a fixed TP.
+
+Bullish trade
+
+As continuation forms new structure:
+
+trail beneath meaningful HLs
+Bearish trade
+trail above meaningful LHs
+
+Do not trail to every micro swing.
+
+Only meaningful continuation structure should move protection.
+
+Earlier management ideas included:
+
+break-even near 0.5 ATR
+partial around 1 ATR
+trail after 2 ATR
+lock profit around 1.5 ATR
+
+These were examples, not immutable final rules.
+
+The final preference is:
+
+structure-aware management
+with measured ATR assistance
+33. Exit rules
+
+Primary exit logic:
+
+Exit when valid opposing BOS shows continuation has failed or reversed.
+
+For BUY:
+
+body-close bearish BOS against trade
+
+For SELL:
+
+body-close bullish BOS against trade
+
+Other possible exits:
+
+logical stop invalidation
+trailing structure failure
+session cutoff
+risk emergency
+spread emergency
+stagnation / continuation failure
+debug timeout only in tests
+34. Continuation health after entry
+
+This is a developing but important requirement.
+
+After entry the bot should not merely ask whether SL or TP was hit.
+
+It should ask:
+
+Is continuation behaving as expected?
+
+Suggested states:
+
+EXPLODING
+HEALTHY
+NORMAL
+STALLING
+WEAKENING
+FAILED
+
+Potential measures:
+
+current RR
+maximum RR seen
+MAE
+MFE
+giveback
+time since entry
+new structure
+follow-through
+opposing BOS
+overlap
+ATR contraction
+acceptance beyond entry level
+
+A STALLING_WARNING should not necessarily close immediately, but it should influence management.
+
+35. Trade management profiles
+
+Current examples:
+
+NORMAL_HOLD_MODE
+EARLY_PROTECTION_TRAIL
+CONSERVATIVE_BODY_CLOSE_INVALIDATION
+ONE_REENTRY_ALLOWED
+
+Management should adapt based on setup quality.
+
+Examples:
+
+High confidence + explosive continuation
+→ allow more room and hold longer
+
+Weak acceptance
+→ tighter monitoring or reduced risk
+
+Stalling
+→ protect earlier or reduce exposure
+
+Opposing BOS
+→ exit
+36. Re-entry rule
+
+One re-entry may be allowed per setup.
+
+Scenario:
+
+Initial entry invalidates or software stop triggers.
+The original directional setup remains structurally valid.
+A new continuation BOS forms in the original direction.
+One re-entry is permitted.
+
+If stopped again:
+
+abandon that setup
+
+The bot must track re-entry count per setup, not globally.
+
+37. Take-profit preference
+
+The strategy generally prefers:
+
+milking continuation through structure-based trailing
+
+rather than a rigid close at fixed RR.
+
+However, the backtester should test:
+
+fixed TP
+partial TP
+structure trailing
+ATR trailing
+hybrid models
+
+to determine what works best per instrument and session.
+
+38. Fibonacci context
+
+Fibonacci may support pullback evaluation but should not become a rigid gate.
+
+Correct orientation:
+
+Downtrend
+0% at retracement origin / high-side start
+100% at LL / impulse destination
+Uptrend
+
+Mirrored appropriately.
+
+Fib “sweet spot” may help classify depth but must not prevent valid earlier continuation setups.
+
+39. Filter philosophy
+
+The user explicitly does not want excessive filtering.
+
+The system previously produced too few trades.
+
+Therefore:
+
+Do not add many arbitrary hard filters.
+Prefer scoring and risk adjustment.
+
+Good approach:
+
+excellent setup → normal risk
+acceptable setup → reduced risk
+poor setup → reject
+
+Not:
+
+twenty strict filters → almost no trades
+40. Spread and execution costs
+
+Spread filters should be instrument-specific.
+
+Historical examples included approximate point thresholds, but these must be validated for broker specifications.
+
+The backtester must include:
+
+spread
+commission
+slippage
+minimum stop distance
+volume step
+tick size
+tick value
+
+A strategy that works without costs may fail live.
+
+41. Trade lifecycle
+
+Every trade should have a lifecycle object.
+
+Suggested states:
+
+SETUP_DETECTED
+ENTRY_READY
+ORDER_PENDING
+OPEN
+PROGRESSING
+STALLING
+PROTECTED
+TRAILING
+REENTRY_PENDING
+CLOSED
+CANCELLED
+INVALIDATED
+
+Every state change should record:
+
+timestamp
+candle index
+price
+reason
+metrics
+
+Example events:
+
+TRADE_OPENED
+TRADE_PROGRESS
+TRADE_STALLING_WARNING
+STOP_MOVED
+PARTIAL_CLOSED
+TRADE_CLOSED
+REENTRY_ARMED
+42. Data to record for every trade
+
+Minimum training/backtest record:
+
+trade_id
+symbol
+timeframe
+HTF timeframe
+session
+date/time
+direction
+trend
+master phase
+trend score
+protection score
+pullback score
+continuation score
+impulse score
+acceptance score
+probability score
+entry quality
+entry index
+entry close
+actual fill
+trigger level
+protected structure
+logical stop
+broker stop
+risk percent
+lot size
+spread
+slippage
+MFE
+MAE
+max RR
+final RR
+exit index
+exit price
+exit reason
+re-entry count
+win/loss
+duration
+management profile
+43. Backtesting requirements
+
+Backtests must be sequential and event-driven.
+
+At candle i:
+
+Only use candles 0...i.
+
+Test across:
+
+all target symbols
+M1
+M5
+M15 context
+London
+New York
+overlap
+different volatility regimes
+trending days
+compression days
+news-spike conditions
+
+Metrics:
+
+win rate
+profit factor
+expectancy
+average RR
+median RR
+max drawdown
+trade frequency
+session performance
+symbol performance
+setup-grade performance
+MFE/MAE
+time-in-trade
+stagnation failure rate
+re-entry performance
+44. Training and self-learning
+
+The bot should not freely rewrite live strategy code.
+
+Safer model:
+
+Strategy rules remain controlled and versioned.
+
+Learning engine analyses historical outcomes.
+
+It recommends or selects from bounded parameters.
+
+Potential learnable parameters:
+
+BOS strength threshold
+ATR multipliers
+session preferences
+symbol preferences
+entry quality threshold
+acceptance threshold
+risk tier
+trailing sensitivity
+partial-close rules
+stalling thresholds
+re-entry conditions
+
+Use:
+
+train set
+validation set
+out-of-sample test set
+walk-forward testing
+
+Prevent:
+
+overfitting
+future leakage
+training on live-test outcomes without version control
+self-modification without approval
+45. Symbol/session specialization
+
+The final system should learn:
+
+which symbols perform best
+which sessions perform best
+which timeframe combinations perform best
+which stop methods perform best
+which trailing models perform best
+
+It should produce reports such as:
+
+GOLD M5 London: strong
+GOLD M1 NY overlap: strong but high spread sensitivity
+GER40 M5 London: strong
+US100 M5 New York: strong
+US30 M1: noisy / reduced risk
+
+These are examples only; actual conclusions must come from backtests.
+
+46. News handling
+
+The user prefers a light news filter.
+
+It should not remove huge portions of trading time.
+
+Possible policy:
+
+Block only high-impact events directly relevant to the instrument,
+within a narrow configurable window.
+
+This must be tested rather than assumed.
+
+47. Current architecture and communication flow
+
+The intended high-level communication should be approximately:
+
+Market Data
+    ↓
+Swing Detection
+    ↓
+Swing Validation / ATR Locking
+    ↓
+Structure Classification
+    ↓
+Hierarchy / Importance
+    ↓
+BOS Detection
+    ↓
+Trend and Phase Context
+    ↓
+Master Structure State
+    ↓
+Decision Protection
+    ↓
+Pullback Context
+    ↓
+Continuation Engine
+    ↓
+Impulse Engine
+    ↓
+Acceptance Engine
+    ↓
+Probability / Market Decision Judge
+    ↓
+Execution Intelligence
+    ↓
+Trade Brain
+    ↓
+Trade Lifecycle / Position Manager
+    ↓
+Journal / Training Dataset
+
+Each downstream phase should consume a stable documented contract from the upstream phase.
+
+48. Required data contracts
+
+Every structure point should ideally contain:
+
+{
+    "index": int,
+    "side": "HIGH" | "LOW",
+    "type": "HH" | "HL" | "LH" | "LL",
+    "wick_price": float,
+    "body_price": float,
+    "confirmed_at_index": int,
+    "timeframe": str,
+    "importance": float,
+    "role": str,
+}
+
+Every BOS:
+
+{
+    "type": "BULLISH_BOS" | "BEARISH_BOS" | "...",
+    "index": int,
+    "close_price": float,
+    "break_price": float,
+    "broken_structure_index": int,
+    "broken_structure_type": str,
+    "broken_structure_price": float,
+    "bos_role": str,
+    "quality": str,
+    "score": float,
+    "confirmed_at_index": int,
+}
+
+Every continuation result:
+
+{
+    "trend": str,
+    "state": str,
+    "counter_move_started": bool,
+    "counter_move_start_index": int | None,
+    "counter_move_end_index": int | None,
+    "counter_structure_points": list,
+    "failure_trigger": dict | None,
+    "continuation_bos": dict | None,
+    "entry_ready": bool,
+    "entry_index": int | None,
+    "entry_price": float | None,
+    "entry_quality": str | None,
+    "entry_score": float | None,
+    "reason": list[str],
+}
+
+One engine must own the canonical final entry.
+
+49. Known current concerns Codex and Claude must audit
+
+Ask them to search specifically for these issues:
+
+A. Future leakage
+Historical entries selected using later candles.
+Final trend applied retroactively.
+Latest/best event selected from full window.
+Fractal confirmation using future bars without delaying event availability.
+B. Entry mismatch
+
+Examples seen:
+
+Context Entry BOS index differs from Final Entry BOS index.
+Old manager and Continuation Engine disagree.
+Last Trend BOS becomes an entry BOS from much earlier history.
+C. Entry price semantics
+
+Verify whether break_price equals:
+
+actual BOS candle close
+body extreme
+trigger level
+or another value
+
+This must be standardized.
+
+D. Protection timing
+
+Verify the protected structure:
+
+existed before the BOS
+caused/defended continuation
+was not selected using future structure
+does not update too quickly
+E. Acceptance weighting
+
+A low acceptance grade must meaningfully affect the trade decision.
+
+F. CHOCH trading
+
+Check whether CHOCH warnings are correctly blocked or downgraded.
+
+G. Duplicate ownership
+
+Search for multiple assignments to:
+
+final_entry_bos
+trend_context
+protected_structure
+active_retracement
+entry_price
+allow_trade
+H. Stale entries
+
+An entry from index 58, 91, or 314 must not remain executable near candle 399 unless explicitly replaying historical trades.
+
+I. Setup consumption
+
+After a setup produces an entry:
+
+mark setup consumed
+do not re-trigger indefinitely
+J. Visualizer versus brain
+
+The visualizer must display exactly the canonical objects used by execution, not old descriptive zones.
+
+50. Current project position
+
+The project has progressed beyond basic structure detection.
+
+Current capabilities include versions of:
+
+structure detection
+ATR locking
+HH/HL/LH/LL classification
+BOS detection
+master phase
+protected structure / decision protection
+pullback context
+Continuation Engine
+Impulse Engine
+Acceptance Engine
+Market Decision Judge
+Execution Intelligence
+Trade Brain
+Trade Lifecycle test
+system reporting
+visualization
+
+However, the system is not yet ready for unsupervised live capital.
+
+Major remaining work:
+
+1. Full architecture and data-contract audit
+2. Eliminate all future leakage
+3. Confirm single ownership/director
+4. Standardize entry price
+5. Complete protected-structure intelligence
+6. Strengthen BOS momentum logic
+7. Complete impulse/correction classification
+8. Fix acceptance weighting and veto rules
+9. Add continuation-health management
+10. Implement proper stop engine
+11. Implement live order execution safely
+12. Build event-driven backtester
+13. Run broad out-of-sample testing
+14. Build training and parameter-learning pipeline
+15. Add monitoring, logging, recovery, and kill switches
+16. Paper trade
+17. Small-risk live validation
+51. Required audit instructions for Codex and Claude
+
+Give them this exact instruction:
+
+Treat the strategy specification as the source of truth. Review every file in dependency order from the main director downward. Map each engine’s inputs, outputs, ownership, and timing. Identify contradictions, duplicated responsibilities, stale data, future-data leakage, inconsistent field names, incorrect entry-price semantics, and any place where downstream code recomputes an upstream decision. Do not patch isolated symptoms. Propose a phased architecture correction with one authoritative owner for trend, protection, active setup, final entry, execution permission, and open-trade lifecycle. For every issue, cite the exact file, class, method, and relevant lines. Provide replacement code only after the complete dependency and communication map is established.
+
+52. Recommended files to give them
+
+Give them the entire project, especially:
+
+main.py
+core/market_structure.py
+core/structure_hierarchy.py
+core/bos_detector.py
+core/bos_importance.py
+core/market_state.py
+core/phase_engine.py
+core/master_structure_state.py
+core/protected_structure.py
+core/continuation_engine.py
+core/retracement_engine.py
+core/retracement_manager.py
+core/retracement_confirmation.py
+core/retracement_context_filter.py
+core/retracement_strength.py
+core/retracement_validity.py
+core/impulse_engine.py
+core/acceptance_engine.py
+core/probability_engine.py
+core/market_decision_judge.py
+core/execution_intelligence.py
+core/trade_brain.py
+core/trade_lifecycle.py
+core/system_reporter.py
+core/structure_visualizer.py
+all config files
+all tests
+all example output logs
+
+Also include several annotated screenshots showing:
+
+where you manually identify pullback start
+which mini protected swing matters
+where the counter-trend fails
+which BOS candle is the entry
+where the stop belongs
+
+The screenshots are essential because they show how the discretionary strategy maps onto code.
+
+53. The shortest possible strategy statement
+
+Place this at the top of anything you send them:
+
+SmartStructureBot trades continuation, not retracements. It establishes a valid higher-timeframe trend, observes a counter-trend move, identifies the relevant internal protected swing inside that counter-move, and enters immediately when a candle body closes through that swing in the original trend direction. That failed-retracement BOS candle is both the retracement end and the entry candle. Wicks do not confirm BOS or logical invalidation. Structure, momentum, protection, impulse, acceptance, and market phase must agree without using future candles.
+
+This is the most complete strategy specification I can reconstruct from everything we have developed together.

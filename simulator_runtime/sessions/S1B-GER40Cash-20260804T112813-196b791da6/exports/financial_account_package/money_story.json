@@ -1,0 +1,26 @@
+[
+  {
+    "amount_zar": null,
+    "description": "BEARISH 0.19 lot filled at 25002.01872; planned risk R150.00.",
+    "timestamp": 1784118660.0,
+    "title": "PAPER POSITION OPENED"
+  },
+  {
+    "amount_zar": 116.5991198694,
+    "description": "Opposing Meaningful Bos: net result R116.60 after R16.55 attributed costs.",
+    "timestamp": 1784120880.0,
+    "title": "POSITION CLOSED"
+  },
+  {
+    "amount_zar": null,
+    "description": "BEARISH 0.21 lot filled at 24969.59309; planned risk R168.66.",
+    "timestamp": 1784121840.0,
+    "title": "PAPER POSITION OPENED"
+  },
+  {
+    "amount_zar": 139.9779442404,
+    "description": "Opposing Meaningful Bos: net result R139.98 after R18.12 attributed costs.",
+    "timestamp": 1784124900.0,
+    "title": "POSITION CLOSED"
+  }
+]

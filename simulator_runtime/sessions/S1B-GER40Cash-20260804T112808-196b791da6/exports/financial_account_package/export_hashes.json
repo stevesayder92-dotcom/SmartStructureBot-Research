@@ -1,0 +1,18 @@
+{
+  "account_statement.csv": "860dd9c2ccd176d7b9fb3f8b8b12bdc017920027d7135ae51aa3dc87ca78a1d6",
+  "account_statement.html": "523ec2313fbee89052b18558698b68182a23235600bb6fc79f2dcf7dd4fbc073",
+  "cost_report.json": "a2ec50fb9040b41b5986a4564eda290ca13f49dc1372f6fc60e32f3b7c6adc46",
+  "equity_curve.csv": "4d2eb4e7aefe83a6cb895170aa414b008247800b58ddb2d85648cc0fdffec3a2",
+  "execution_ledger.csv": "860dd9c2ccd176d7b9fb3f8b8b12bdc017920027d7135ae51aa3dc87ca78a1d6",
+  "execution_ledger.jsonl": "aa3b4909e8352f0c5650e84051a6999e1f0f75bd1bdff9930d134de28229bc5c",
+  "financial_bug_report.json": "dbfe74b7d00f565b5dd2260372d374fc25c817714e93e587590ff5c34a1c3861",
+  "margin_report.json": "ad142f9736ad9f0a93dfb08d3a690d24e68124eb77847d3e43b72a2bf61e8b86",
+  "money_story.json": "47e9aecb87df0d76acb18749f3e00f62e388c6d1c958c2e8ab3e5cca43b50494",
+  "performance_summary.json": "5f9fed9494aab1712505a777bc9e273fb122eb1ddc116962d4380c6313c8c0b1",
+  "replay_manifest.json": "bcd012f4428b4c0fa7ca7edb4f7aaebad791185162002d15769b2d5e0a70cbb6",
+  "sequence_report.json": "7a9d71aee8b134b74cabe8e171f789ace099902b26b3964e8ed8eee81ee22dd6",
+  "session_summary.json": "12951efc20acdcedec781d3647321b692d1e9ca58ac423507736ede012ca2022",
+  "shadow_account_comparison.json": "ad46a64676c481edd3632297e22ba174a0dd90e0a4c336db1349b3075045a7df",
+  "symbol_summary.json": "7359f6925ff07d0f1fcf4fea3985ef61ee367a1653c07d72da91ba8703671e8f",
+  "trade_attempt_report.json": "c01eccc5ea1fda1aabb7bed874fa4dbf049e6b8ebd725c7dca111fe40d431bdb"
+}

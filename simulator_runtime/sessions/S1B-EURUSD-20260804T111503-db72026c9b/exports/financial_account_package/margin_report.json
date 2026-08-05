@@ -1,0 +1,28 @@
+[
+  {
+    "account_id": "CANONICAL-PAPER-ZAR",
+    "action": "MARGIN_WARNING",
+    "attempt_id": "EURUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_291|REENTRY_169",
+    "balance_after": 997.438,
+    "causal_valid": true,
+    "costs": {},
+    "details": {
+      "margin_level": 117.5643232398
+    },
+    "equity_after": 986.799663928,
+    "execution_event_id": "CANONICAL-PAPER-ZAR|EXEC|000005",
+    "fill_price": null,
+    "gross_pl": 0.0,
+    "margin_after": 839.37000336,
+    "net_pl": 0.0,
+    "parent_state_hash": "879b33eda8cb869e15e85606719b33c58bef13ad070ba7438d6849446618a90b",
+    "replay_event_id": "S1B-EURUSD-20260804T111503-db72026c9b|EVENT|000052",
+    "requested_price": null,
+    "sequence_id": "EURUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_291",
+    "setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_291",
+    "state_hash": "32c34b87aa245645ceb82a8f15454a95136f7ece60acbfb89e7eaf5fc97beec6",
+    "symbol": "EURUSD#",
+    "timestamp": 1784182200.0,
+    "volume": 0.0
+  }
+]

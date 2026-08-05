@@ -1,0 +1,17 @@
+{
+  "version": "PRESIMULATOR_REPAIRED_HYBRID_V1",
+  "mode": "RESEARCH",
+  "order_execution": false,
+  "parent_expiry_minutes": 360,
+  "meaningful_reset_atr": 0.35,
+  "m1_trigger_freshness_candles": 10,
+  "m5_trigger_freshness_candles": 12,
+  "maximum_reentries": 1,
+  "max_emergency_account_risk": 1.25,
+  "selected_risk_model": "SIZE_FROM_EMERGENCY_STOP",
+  "causal_tp1_wick_fraction": 0.4,
+  "causal_tp1_close_fraction": 0.35,
+  "causal_tp1_acceptance_fraction": 0.25,
+  "causal_tp1_rejection_fraction": 0.5,
+  "maximum_partial_events": 1
+}

@@ -1,0 +1,126 @@
+{
+  "scenarios": [
+    {
+      "id": 1,
+      "name": "Clean M5 first entry",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 2,
+      "name": "Clean M1 early entry",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 3,
+      "name": "M1 rejected and M5 enters",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 4,
+      "name": "M1 first attempt fails",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 5,
+      "name": "Parent extension is proven",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 6,
+      "name": "M1 re-entry occurs",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 7,
+      "name": "M5 re-entry occurs after M1 failure",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 8,
+      "name": "Attempt 2 receives full management",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 9,
+      "name": "TP1 wick touch without forced break-even",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 10,
+      "name": "TP1 acceptance and runner continuation",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 11,
+      "name": "Target rejection and deterioration",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 12,
+      "name": "Severe giveback",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 13,
+      "name": "Winner-to-loser reversal",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 14,
+      "name": "Normal pullback correctly held",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 15,
+      "name": "Long runner preserved",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 16,
+      "name": "Opposing BOS exit",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 17,
+      "name": "Emergency stop event",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 18,
+      "name": "Engine recommendation conflict",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 19,
+      "name": "Director rejects a protection recommendation",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    },
+    {
+      "id": 20,
+      "name": "Prefix-integrity failure test",
+      "status": "COVERED_BY_FRAMEWORK",
+      "evidence_required_for_strategy_claim": true
+    }
+  ],
+  "trade_51_required": true,
+  "trade_51_session": "S1-CASE-60"
+}

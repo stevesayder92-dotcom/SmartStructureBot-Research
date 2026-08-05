@@ -1,0 +1,17 @@
+{
+  "by_symbol": {
+    "GER40Cash#": {
+      "commission": 0.0,
+      "slippage": 2.5902292794,
+      "spread": 49.14,
+      "swap": 0.0
+    }
+  },
+  "totals": {
+    "commission": 0.0,
+    "slippage": 2.5902292794,
+    "spread": 49.14,
+    "swap": 0.0,
+    "total": 51.7302292794
+  }
+}

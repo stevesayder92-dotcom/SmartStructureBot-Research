@@ -1,0 +1,10 @@
+{
+  "sessions": 12,
+  "ready_sessions": 12,
+  "failed_sessions": 0,
+  "total_events": 999,
+  "total_build_seconds": 1953.87,
+  "mean_build_seconds": 162.822,
+  "orders_called": 0,
+  "note": "Local frozen-data build performance only; not a trading result."
+}

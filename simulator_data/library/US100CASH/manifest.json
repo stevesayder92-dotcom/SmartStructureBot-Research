@@ -1,0 +1,516 @@
+{
+  "schema_version": "SMARTSTRUCTUREBOT_PORTABLE_DATA_V1",
+  "symbol": "US100Cash#",
+  "timezone": "UTC",
+  "source": "Frozen research source converted from internal pickle cache",
+  "native_or_derived": "NATIVE_OHLC_FROM_FROZEN_SOURCE",
+  "timeframes": {
+    "M1": {
+      "rows": 29820,
+      "first_timestamp": 1782915240.0,
+      "last_timestamp": 1785489480.0,
+      "data_hash": "d49ea9eaed7703bbdfe7c772f8a63598557f6a325bf3425647e33537d4bd9bbe",
+      "file": "M1.csv",
+      "columns": [
+        "time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "tick_volume",
+        "spread",
+        "real_volume"
+      ],
+      "spread_availability": "NATIVE"
+    },
+    "M5": {
+      "rows": 3600,
+      "first_timestamp": 1784016900.0,
+      "last_timestamp": 1785489000.0,
+      "data_hash": "0f29320ad5aaea8b5f5152934d63a7bdc687ce12c42e81a421873402d7c4b445",
+      "file": "M5.csv",
+      "columns": [
+        "time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "tick_volume",
+        "spread",
+        "real_volume"
+      ],
+      "spread_availability": "NATIVE"
+    }
+  },
+  "validation": {
+    "state": "VALID",
+    "valid": true,
+    "timezone": "UTC",
+    "m1": {
+      "owner": "SynchronizedM1ReplayCoordinator",
+      "state": "VALID_CLOSED_SERIES",
+      "valid": true,
+      "missing_columns": [],
+      "duplicate_timestamps": 0,
+      "monotonic": true,
+      "unfinished_candles": 0,
+      "published_gaps": [
+        {
+          "index": 586,
+          "previous_time": 1782950340.0,
+          "current_time": 1782954000.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 1966,
+          "previous_time": 1783036740.0,
+          "current_time": 1783040400.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 3101,
+          "previous_time": 1783108440.0,
+          "current_time": 1783299600.0,
+          "seconds": 191160.0
+        },
+        {
+          "index": 4481,
+          "previous_time": 1783382340.0,
+          "current_time": 1783386000.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 5861,
+          "previous_time": 1783468740.0,
+          "current_time": 1783472400.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 7241,
+          "previous_time": 1783555140.0,
+          "current_time": 1783558800.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 8621,
+          "previous_time": 1783641540.0,
+          "current_time": 1783645200.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 10001,
+          "previous_time": 1783727940.0,
+          "current_time": 1783904400.0,
+          "seconds": 176460.0
+        },
+        {
+          "index": 11381,
+          "previous_time": 1783987140.0,
+          "current_time": 1783990800.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 12761,
+          "previous_time": 1784073540.0,
+          "current_time": 1784077200.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 14141,
+          "previous_time": 1784159940.0,
+          "current_time": 1784163600.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 15521,
+          "previous_time": 1784246340.0,
+          "current_time": 1784250000.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 16901,
+          "previous_time": 1784332740.0,
+          "current_time": 1784509200.0,
+          "seconds": 176460.0
+        },
+        {
+          "index": 18281,
+          "previous_time": 1784591940.0,
+          "current_time": 1784595600.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 19661,
+          "previous_time": 1784678340.0,
+          "current_time": 1784682000.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 21041,
+          "previous_time": 1784764740.0,
+          "current_time": 1784768400.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 22421,
+          "previous_time": 1784851140.0,
+          "current_time": 1784854800.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 23801,
+          "previous_time": 1784937540.0,
+          "current_time": 1785114000.0,
+          "seconds": 176460.0
+        },
+        {
+          "index": 25181,
+          "previous_time": 1785196740.0,
+          "current_time": 1785200400.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 26561,
+          "previous_time": 1785283140.0,
+          "current_time": 1785286800.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 27941,
+          "previous_time": 1785369540.0,
+          "current_time": 1785373200.0,
+          "seconds": 3660.0
+        },
+        {
+          "index": 29321,
+          "previous_time": 1785455940.0,
+          "current_time": 1785459600.0,
+          "seconds": 3660.0
+        }
+      ],
+      "gaps_hidden": false,
+      "timezone": "UTC",
+      "causal_valid": true
+    },
+    "m5": {
+      "owner": "SynchronizedM1ReplayCoordinator",
+      "state": "VALID_CLOSED_SERIES",
+      "valid": true,
+      "missing_columns": [],
+      "duplicate_timestamps": 0,
+      "monotonic": true,
+      "unfinished_candles": 0,
+      "published_gaps": [
+        {
+          "index": 189,
+          "previous_time": 1784073300.0,
+          "current_time": 1784077200.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 465,
+          "previous_time": 1784159700.0,
+          "current_time": 1784163600.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 741,
+          "previous_time": 1784246100.0,
+          "current_time": 1784250000.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 1017,
+          "previous_time": 1784332500.0,
+          "current_time": 1784509200.0,
+          "seconds": 176700.0
+        },
+        {
+          "index": 1293,
+          "previous_time": 1784591700.0,
+          "current_time": 1784595600.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 1569,
+          "previous_time": 1784678100.0,
+          "current_time": 1784682000.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 1845,
+          "previous_time": 1784764500.0,
+          "current_time": 1784768400.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 2121,
+          "previous_time": 1784850900.0,
+          "current_time": 1784854800.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 2397,
+          "previous_time": 1784937300.0,
+          "current_time": 1785114000.0,
+          "seconds": 176700.0
+        },
+        {
+          "index": 2673,
+          "previous_time": 1785196500.0,
+          "current_time": 1785200400.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 2949,
+          "previous_time": 1785282900.0,
+          "current_time": 1785286800.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 3225,
+          "previous_time": 1785369300.0,
+          "current_time": 1785373200.0,
+          "seconds": 3900.0
+        },
+        {
+          "index": 3501,
+          "previous_time": 1785455700.0,
+          "current_time": 1785459600.0,
+          "seconds": 3900.0
+        }
+      ],
+      "gaps_hidden": false,
+      "timezone": "UTC",
+      "causal_valid": true
+    },
+    "ohlc_errors": [],
+    "m5_closes_without_m1_close": [],
+    "missing_candles_are_never_filled": true
+  },
+  "gaps": {
+    "M1": [
+      {
+        "index": 586,
+        "previous_time": 1782950340.0,
+        "current_time": 1782954000.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 1966,
+        "previous_time": 1783036740.0,
+        "current_time": 1783040400.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 3101,
+        "previous_time": 1783108440.0,
+        "current_time": 1783299600.0,
+        "seconds": 191160.0
+      },
+      {
+        "index": 4481,
+        "previous_time": 1783382340.0,
+        "current_time": 1783386000.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 5861,
+        "previous_time": 1783468740.0,
+        "current_time": 1783472400.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 7241,
+        "previous_time": 1783555140.0,
+        "current_time": 1783558800.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 8621,
+        "previous_time": 1783641540.0,
+        "current_time": 1783645200.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 10001,
+        "previous_time": 1783727940.0,
+        "current_time": 1783904400.0,
+        "seconds": 176460.0
+      },
+      {
+        "index": 11381,
+        "previous_time": 1783987140.0,
+        "current_time": 1783990800.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 12761,
+        "previous_time": 1784073540.0,
+        "current_time": 1784077200.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 14141,
+        "previous_time": 1784159940.0,
+        "current_time": 1784163600.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 15521,
+        "previous_time": 1784246340.0,
+        "current_time": 1784250000.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 16901,
+        "previous_time": 1784332740.0,
+        "current_time": 1784509200.0,
+        "seconds": 176460.0
+      },
+      {
+        "index": 18281,
+        "previous_time": 1784591940.0,
+        "current_time": 1784595600.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 19661,
+        "previous_time": 1784678340.0,
+        "current_time": 1784682000.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 21041,
+        "previous_time": 1784764740.0,
+        "current_time": 1784768400.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 22421,
+        "previous_time": 1784851140.0,
+        "current_time": 1784854800.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 23801,
+        "previous_time": 1784937540.0,
+        "current_time": 1785114000.0,
+        "seconds": 176460.0
+      },
+      {
+        "index": 25181,
+        "previous_time": 1785196740.0,
+        "current_time": 1785200400.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 26561,
+        "previous_time": 1785283140.0,
+        "current_time": 1785286800.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 27941,
+        "previous_time": 1785369540.0,
+        "current_time": 1785373200.0,
+        "seconds": 3660.0
+      },
+      {
+        "index": 29321,
+        "previous_time": 1785455940.0,
+        "current_time": 1785459600.0,
+        "seconds": 3660.0
+      }
+    ],
+    "M5": [
+      {
+        "index": 189,
+        "previous_time": 1784073300.0,
+        "current_time": 1784077200.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 465,
+        "previous_time": 1784159700.0,
+        "current_time": 1784163600.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 741,
+        "previous_time": 1784246100.0,
+        "current_time": 1784250000.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 1017,
+        "previous_time": 1784332500.0,
+        "current_time": 1784509200.0,
+        "seconds": 176700.0
+      },
+      {
+        "index": 1293,
+        "previous_time": 1784591700.0,
+        "current_time": 1784595600.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 1569,
+        "previous_time": 1784678100.0,
+        "current_time": 1784682000.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 1845,
+        "previous_time": 1784764500.0,
+        "current_time": 1784768400.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 2121,
+        "previous_time": 1784850900.0,
+        "current_time": 1784854800.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 2397,
+        "previous_time": 1784937300.0,
+        "current_time": 1785114000.0,
+        "seconds": 176700.0
+      },
+      {
+        "index": 2673,
+        "previous_time": 1785196500.0,
+        "current_time": 1785200400.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 2949,
+        "previous_time": 1785282900.0,
+        "current_time": 1785286800.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 3225,
+        "previous_time": 1785369300.0,
+        "current_time": 1785373200.0,
+        "seconds": 3900.0
+      },
+      {
+        "index": 3501,
+        "previous_time": 1785455700.0,
+        "current_time": 1785459600.0,
+        "seconds": 3900.0
+      }
+    ]
+  },
+  "contract_spec_source": "ESTIMATED_RESEARCH_PROFILE",
+  "contract_spec_warning": "Manual research estimate; verify against broker metadata before forward use.",
+  "creation_environment": {
+    "python": "3.12.13",
+    "pandas": "3.0.1",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "created_at": "2026-08-02T23:43:02.151754+00:00",
+  "library_hash": "53b9bd003623ae1a8e4e0e2480c63628d5d87c0e9f8de4e0a74367c3492dfcda"
+}

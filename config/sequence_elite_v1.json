@@ -1,0 +1,45 @@
+{
+  "version": "FINAL_SEQUENCE_ELITE_V1",
+  "research_only": true,
+  "order_execution": false,
+  "reentry": {
+    "m1_trigger_freshness_candles": 10,
+    "m5_trigger_freshness_candles": 12,
+    "parent_retracement_expiry_minutes": 360,
+    "competing_trigger_policy": "FIRST_VALID_CLOSED_BOS_WINS",
+    "maximum_reentries_per_parent": 1,
+    "meaningful_swing_atr": 0.35,
+    "minimum_close_beyond_trigger_atr_soft_grade": 0.30
+  },
+  "initial_stop": {
+    "structure_policy": "LAST_CONFIRMED_MEANINGFUL_PRE_ENTRY_SWING",
+    "m5_atr_tolerance": 0.15,
+    "m1_atr_tolerance": 0.0,
+    "exit_confirmation": "CANDLE_BODY_CLOSE"
+  },
+  "earned_opportunity": {
+    "emerging_r": 0.35,
+    "earned_r": 0.75,
+    "significant_r": 1.50,
+    "major_runner_r": 3.00,
+    "minimum_proven_structures": 1
+  },
+  "opportunity_risk": {
+    "deterioration_hysteresis": 2,
+    "target_rejection_weight": 25.0,
+    "elevated_giveback_r": 0.75,
+    "severe_giveback_r": 1.25,
+    "retained_peak_warning_ratio": 0.40
+  },
+  "mature_profit_floor": {
+    "minimum_peak_r": 1.50,
+    "normal_pullback_max_impulse_ratio": 0.50,
+    "structure_only": true
+  },
+  "partial_profiles": {
+    "default": "DYNAMIC_PARTIAL_PLUS_RUNNER",
+    "accepted_beyond_fraction": 0.25,
+    "wick_touch_fraction": 0.50,
+    "rejection_fraction": 0.65
+  }
+}

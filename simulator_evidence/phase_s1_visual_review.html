@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SmartStructureBot Phase S1 Visual Review</title><style>
+    :root{color-scheme:dark}body{margin:0;background:#07101d;color:#edf4ff;font:14px/1.45 Segoe UI,Arial,sans-serif}header.hero{position:sticky;top:0;z-index:2;padding:22px 4vw;background:#0a1728;border-bottom:1px solid #29415f}h1{margin:0 0 6px}main{padding:18px 4vw}article{margin:0 0 24px;background:#0d1b2e;border:1px solid #29415f;border-radius:12px;overflow:hidden}article>header{display:flex;justify-content:space-between;gap:16px;padding:14px 18px;background:#11233a}article h2{margin:2px 0}article span,article p{color:#93a9c1}article p,.actions,.review{padding:0 18px}.actions{color:#63d8ba;font-weight:600}.charts{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}figure{margin:0}figcaption{padding:6px;color:#93a9c1}img{display:block;width:100%;height:auto;border:1px solid #29415f}.review{padding-bottom:16px;color:#d7e5f5}.badges{color:#82c3ff}@media(max-width:900px){.charts{grid-template-columns:1fr}}
+    </style></head><body><header class="hero"><h1>SmartStructureBot Phase S1 · Visual Review</h1><div class="badges">12 curated sessions · 999 immutable events · historical closed candles · orders disabled · performance not guaranteed</div></header><main>
+        <article>
+          <header><div><span>M1_CLEAR_ADVANTAGE</span><h2>S1-CASE-02 · EURUSD#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Did M1 improve entry timing without accepting micro noise?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE → MOVE_TO_PROVEN_M1_STRUCTURE</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 25</figcaption><img src="key_screenshots/S1-CASE-02_M5.png" alt="S1-CASE-02 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 25</figcaption><img src="key_screenshots/S1-CASE-02_M1.png" alt="S1-CASE-02 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>M1_CLEAR_ADVANTAGE</span><h2>S1-CASE-09 · USDJPY#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Did M1 preserve the parent thesis and meaningful trigger ownership?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE → EXIT_OPPOSING_BOS</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 25</figcaption><img src="key_screenshots/S1-CASE-09_M5.png" alt="S1-CASE-09 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 25</figcaption><img src="key_screenshots/S1-CASE-09_M1.png" alt="S1-CASE-09 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>M5_FALLBACK</span><h2>S1-CASE-64 · AUDUSD#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Were all earlier M1 signals correctly rejected before M5 confirmation?</p>
+          <div class="actions">Director story: NO_ACTION in review window</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 59</figcaption><img src="key_screenshots/S1-CASE-64_M5.png" alt="S1-CASE-64 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 59</figcaption><img src="key_screenshots/S1-CASE-64_M1.png" alt="S1-CASE-64 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>M5_FALLBACK</span><h2>S1-CASE-81 · GOLD#</h2></div><strong>13 events · Causal PASS</strong></header>
+          <p>Was waiting for M5 preferable to the rejected M1 candidates?</p>
+          <div class="actions">Director story: NO_ACTION in review window</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 12</figcaption><img src="key_screenshots/S1-CASE-81_M5.png" alt="S1-CASE-81 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 12</figcaption><img src="key_screenshots/S1-CASE-81_M1.png" alt="S1-CASE-81 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>REENTRY_SEQUENCE</span><h2>S1-CASE-01 · US100Cash#</h2></div><strong>326 events · Causal PASS</strong></header>
+          <p>Was the first failure classified correctly and was fresh proof required?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE → MOVE_TO_PROVEN_M1_STRUCTURE → EXIT_OPPOSING_BOS → ENTER_REENTRY_M1 → MOVE_TO_PROVEN_M1_STRUCTURE → MOVE_TO_PROVEN_M1_STRUCTURE → MOVE_TO_PROVEN_M1_STRUCTURE → MOVE_TO_PROVEN_M1_STRUCTURE → MOVE_TO_PROVEN_M1_STRUCTURE → EXIT_OPPOSING_BOS</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 25</figcaption><img src="key_screenshots/S1-CASE-01_M5.png" alt="S1-CASE-01 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 25</figcaption><img src="key_screenshots/S1-CASE-01_M1.png" alt="S1-CASE-01 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>TRADE_51_REENTRY_SEQUENCE</span><h2>S1-CASE-60 · AUDUSD#</h2></div><strong>120 events · Causal PASS</strong></header>
+          <p>Did the state wait for parent extension before the later M1 re-entry?</p>
+          <div class="actions">Director story: ENTER_M1 → ENTER_REENTRY_M1 → EXIT_LOGICAL</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 46</figcaption><img src="key_screenshots/S1-CASE-60_M5.png" alt="S1-CASE-60 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 46</figcaption><img src="key_screenshots/S1-CASE-60_M1.png" alt="S1-CASE-60 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>SEVERE_GIVEBACK</span><h2>S1-CASE-19 · GBPUSD#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Which engine first recommended protecting the earned opportunity?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE → EXIT_OPPOSING_BOS</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 25</figcaption><img src="key_screenshots/S1-CASE-19_M5.png" alt="S1-CASE-19 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 25</figcaption><img src="key_screenshots/S1-CASE-19_M1.png" alt="S1-CASE-19 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>SEVERE_GIVEBACK</span><h2>S1-CASE-45 · GBPUSD#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Did a valid tighter structure exist before the giveback?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 33</figcaption><img src="key_screenshots/S1-CASE-45_M5.png" alt="S1-CASE-45 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 33</figcaption><img src="key_screenshots/S1-CASE-45_M1.png" alt="S1-CASE-45 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>WINNER_TO_LOSER_REVERSAL</span><h2>S1-CASE-10 · GER40Cash#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Did the Director hold for a valid structural reason?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 25</figcaption><img src="key_screenshots/S1-CASE-10_M5.png" alt="S1-CASE-10 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 25</figcaption><img src="key_screenshots/S1-CASE-10_M1.png" alt="S1-CASE-10 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>LONG_RUNNER</span><h2>S1-CASE-69 · EURUSD#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Were normal pullbacks held while proven structure remained intact?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 17</figcaption><img src="key_screenshots/S1-CASE-69_M5.png" alt="S1-CASE-69 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 17</figcaption><img src="key_screenshots/S1-CASE-69_M1.png" alt="S1-CASE-69 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>NORMAL_PULLBACK_HELD</span><h2>S1-CASE-34 · GBPUSD#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Did the manager avoid reacting to unproven micro structures?</p>
+          <div class="actions">Director story: ENTER_M1 → MOVE_TO_PROVEN_M1_STRUCTURE</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 25</figcaption><img src="key_screenshots/S1-CASE-34_M5.png" alt="S1-CASE-34 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 25</figcaption><img src="key_screenshots/S1-CASE-34_M1.png" alt="S1-CASE-34 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article>
+        <article>
+          <header><div><span>ENGINE_DIRECTOR_CONFLICT</span><h2>S1-CASE-47 · USDJPY#</h2></div><strong>60 events · Causal PASS</strong></header>
+          <p>Was dominant protection failure correctly prioritized over re-entry advice?</p>
+          <div class="actions">Director story: ENTER_M1 → EXIT_LOGICAL</div>
+          <div class="charts"><figure><figcaption>M5 parent · event 25</figcaption><img src="key_screenshots/S1-CASE-47_M5.png" alt="S1-CASE-47 M5 closed-candle chart"></figure><figure><figcaption>M1 execution · event 25</figcaption><img src="key_screenshots/S1-CASE-47_M1.png" alt="S1-CASE-47 M1 closed-candle chart"></figure></div>
+          <div class="review">Steve review: ENTRY □ Accept □ Reject □ Uncertain &nbsp; STOP □ Accept □ Reject □ Uncertain &nbsp; MANAGEMENT □ Accept □ Reject □ Uncertain &nbsp; RE-ENTRY □ Accept □ Reject □ Uncertain</div>
+        </article></main></body></html>

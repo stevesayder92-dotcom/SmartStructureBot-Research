@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Human strategy references supplied by Steve; not yet candle-index mapped.",
+  "examples": [
+    {
+      "example_id": "STEVE-USDJPY-M1-MANUAL-001",
+      "image": "reference_images/steve_usdjpy_manual_example.png",
+      "review_status": "NEEDS_CANDLE_MAPPING",
+      "instrument_displayed": "USDJPY",
+      "entry_timeframe": "M1",
+      "human_decision": "UNCERTAIN",
+      "observed_strategy_elements": [
+        "HTF-aligned continuation",
+        "body-close BOS entry",
+        "double/triple top or bottom liquidity context",
+        "retracement sweet zone",
+        "decision stop beyond retracement swing",
+        "next trend swing target"
+      ],
+      "manual_reason": "Reference image is authoritative visually but has no broker OHLC/index mapping yet."
+    },
+    {
+      "example_id": "STEVE-GOLD-M1-MANUAL-002",
+      "image": "reference_images/steve_gold_manual_example.png",
+      "review_status": "NEEDS_CANDLE_MAPPING",
+      "instrument_displayed": "GOLD",
+      "entry_timeframe": "M1",
+      "human_decision": "UNCERTAIN",
+      "observed_strategy_elements": [
+        "main-trend versus counter-trend separation",
+        "failed-retracement BOS",
+        "body-close entry and exit",
+        "liquidity sweep interpretation",
+        "double/triple bottom support",
+        "stable broader pullback despite micro structure"
+      ],
+      "manual_reason": "Reference image is authoritative visually but has no exact XM candle mapping yet."
+    }
+  ]
+}

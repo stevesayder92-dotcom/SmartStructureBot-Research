@@ -1,0 +1,906 @@
+{
+  "owner": "TestAuthorityAudit",
+  "state": "ALL_TESTS_CLASSIFIED",
+  "authoritative_strategy_contract": "SmartStructureBot_Bible CHG-2026-07-31-FINAL-FIDELITY",
+  "counts": {
+    "ACTIVE_AUTHORITATIVE": 33,
+    "LEGACY_REGRESSION": 142,
+    "OBSOLETE_CONFLICTING": 0
+  },
+  "superseded_expectations": [
+    {
+      "source_test": "test_phase10_full_strategy_contract.test_01_fibonacci_anchors_are_directionally_correct",
+      "classification": "OBSOLETE_CONFLICTING",
+      "old_rule": "Fib 0 was impulse extreme and Fib 100 origin",
+      "replacement": "Fib 0 is origin and Fib 100 is retracement-start impulse extreme"
+    },
+    {
+      "source_test": "test_phase10_full_strategy_contract.test_04_sweet_spot_bos_receives_high_relevance",
+      "classification": "OBSOLETE_CONFLICTING",
+      "old_rule": "38.2%-61.8% retracement depth was primary",
+      "replacement": "23.6%-38.2% remaining impulse is Steve's primary deep sweet spot"
+    },
+    {
+      "source": "M1_RELEVANT_SWING_CANDLE_CLOSE terminology",
+      "classification": "OBSOLETE_CONFLICTING",
+      "replacement": "M1_RELEVANT_SWING_BODY_EDGE"
+    }
+  ],
+  "tests": [
+    {
+      "file": "test_canonical_entry_contract.py",
+      "test": "test_legacy_entry_is_not_restored_by_phase4",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_canonical_entry_contract.py",
+      "test": "test_noise_candle_creates_no_ledger_entry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_canonical_entry_contract.py",
+      "test": "test_blocked_candidate_is_published_non_ready",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_canonical_entry_contract.py",
+      "test": "test_stale_candidate_cannot_be_published",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_canonical_entry_contract.py",
+      "test": "test_future_suffix_does_not_change_entry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_canonical_entry_flow.py",
+      "test": "test_phase4_pipeline_never_publishes_pre_origin_setup",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_disconnected_mt5_is_rejected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_forming_candle_is_excluded_at_source",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_forming_candle_in_payload_is_rejected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_server_wall_clock_is_converted_to_real_utc",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_duplicate_timestamps_are_rejected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_missing_candle_gap_is_detected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_stale_data_is_rejected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_insufficient_history_is_rejected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_closed_candle_data_safety.py",
+      "test": "test_symbol_suffix_resolution_is_safe",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_director_root_contracts.py",
+      "test": "test_remaining_root_contracts_are_complete",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_director_root_contracts.py",
+      "test": "test_ledger_consumes_root_contract_values",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_director_root_contracts.py",
+      "test": "test_phase4_retracement_root_is_causal",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_fibonacci_zero_is_origin_and_hundred_is_extreme",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_fibonacci_remaining_and_depth_are_complements",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_raw_fibonacci_breach_is_not_hidden_by_display_clamp",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_unrelated_m1_parent_is_hard_rejected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_synchronized_timeline_never_exposes_unfinished_candles",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_valid_m1_entry_uses_relevant_swing_body_edge",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_first_valid_m1_consumes_and_blocks_later_m5",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_m5_fallback_closes_m1_gate_when_no_child_entry",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_m1_to_m5_transition_never_widens",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_one_reentry_per_parent_and_protection_failure_blocks",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_target_wick_close_acceptance_and_rejection_are_distinct",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_target_hierarchy_rejects_wrong_side_objective",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_target_rejection_after_acceptance_exits_runner",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_tp1_touch_does_not_force_break_even",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_emergency_broker_stop_caps_catastrophic_wick",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_profit_capture_metrics_are_exact",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_final_fidelity_contract.py",
+      "test": "test_replay_contract_is_reproducible_and_research_only",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_htf_context.py",
+      "test": "test_m30_m15_preferred_agreement",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_htf_context.py",
+      "test": "test_consensus_policy_requires_two_clean_frames",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_htf_context.py",
+      "test": "test_one_clean_strong_htf_can_be_accepted",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_htf_context.py",
+      "test": "test_future_htf_snapshot_cannot_retroactively_change_context",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_htf_context.py",
+      "test": "test_local_countertrend_does_not_overwrite_htf",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_htf_context.py",
+      "test": "test_pipeline_publishes_context_without_hardcoding_gate",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_main_canonical_runtime.py",
+      "test": "test_main_is_a_thin_launcher",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_main_canonical_runtime.py",
+      "test": "test_application_and_replay_share_pipeline_contract",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_main_canonical_runtime.py",
+      "test": "test_live_mode_is_rejected",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_phase10_1_feedback_contract.py",
+      "test": "test_sell_stop_uses_last_reaction_high_proved_by_entry_bos",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_1_feedback_contract.py",
+      "test": "test_buy_stop_uses_last_reaction_low_proved_by_entry_bos",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_1_feedback_contract.py",
+      "test": "test_no_opposing_reaction_uses_causal_confirmed_fallback",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_1_feedback_contract.py",
+      "test": "test_previous_impulse_tp1_is_triggered_by_wick_touch",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_01_fibonacci_anchors_are_directionally_correct",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_02_fibonacci_depth_is_causal",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_03_fibonacci_minimum_is_configurable",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_04_sweet_spot_bos_receives_high_relevance",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_05_shallow_strong_bos_remains_tradable",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_06_deep_retracement_valid_while_protection_holds",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_07_first_failure_leaves_parent_retracement_active",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_08_early_failure_does_not_automatically_invalidate_parent",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_09_fresh_relevant_bos_allows_one_reentry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_10_reentry_requires_no_new_major_setup",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_11_reentry_same_parent_separate_event_id",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_12_dominant_protection_failure_blocks_reentry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_13_second_failure_closes_parent",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_14_soft_filters_reduce_risk_instead_of_blocking",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_15_m1_fallback_requires_valid_m5_context",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_16_m1_to_m5_transition_never_loosens",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_17_raw_fractal_is_not_automatically_meaningful",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_18_trail_requires_meaningful_continuation_proof",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_19_tp1_touch_does_not_automatically_force_break_even",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_20_opposing_meaningful_bos_exits",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_21_wick_only_logical_stop_survives",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_22_body_close_invalidation_exits",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_23_no_future_data_changes_confirmed_history",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_24_no_stale_trigger_entry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase10_full_strategy_contract.py",
+      "test": "test_25_no_order_apis",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_01_micro_noise_only",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_02_internal_break_without_maturity",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_03_qualified_bearish_trend_retracement",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_04_valid_bearish_entry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_05_valid_bullish_mirror",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_06_protected_swing_violation",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_07_wick_through_protection",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_08_pre_origin_compression_is_ignored",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_09_one_strong_counter_structure_can_qualify",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_10_weak_first_bounce_stays_candidate",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_11_identity_stability",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_12_new_impulse_cycle_gets_new_identity",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_13_prequalification_trigger_is_rejected",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_14_future_confirmed_structure_is_unavailable",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_qualified_retracement.py",
+      "test": "test_15_compression_merging_creates_no_setup_ids",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase4_real_data_integration.py",
+      "test": "test_gold_qualified_entry_reaches_canonical_director",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_audit_export_and_ledger_use_canonical_snapshot",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_first_qualification_is_immutable",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_explicit_active_trigger_updates",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_no_stale_trigger_from_previous_setup",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_protection_body_close_and_wick_contract",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_protection_belongs_to_origin_cycle",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_score_range_contract_preserves_raw_score",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5a_evidence_contract.py",
+      "test": "test_manual_review_import_validation",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_impulse_cycle_contract_is_causal",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_unrelated_old_cycle_protection_is_rejected",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_origin_defending_protection_remains_stable",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_newer_protection_requires_continuation_bos",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_raw_latest_swing_cannot_replace_protection",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_replacement_is_causal_and_current",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_waiting_is_published_without_fallback",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_freshness_is_deterministic",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_trigger_refresh_must_belong_to_same_setup",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_stale_classification_does_not_change_outcome",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_htf_comparisons_are_advisory",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_canonical_invalidation_reproduces",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_ownership_freshness.py",
+      "test": "test_full_history_contamination_is_rejected",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_pipeline_contracts.py",
+      "test": "test_protection_belongs_to_current_cycle",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_pipeline_contracts.py",
+      "test": "test_protection_roles_are_independent_roots",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_pipeline_contracts.py",
+      "test": "test_entry_freshness_is_causal_and_advisory",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_pipeline_contracts.py",
+      "test": "test_no_future_cycle_or_protection_data",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_pipeline_contracts.py",
+      "test": "test_no_order_api_calls_exist_in_runtime",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase5b_pipeline_contracts.py",
+      "test": "test_missing_qualified_trigger_cannot_use_raw_fallback",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase6_strategy_fidelity.py",
+      "test": "test_incomplete_review_is_never_scored_as_rejection",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase6_strategy_fidelity.py",
+      "test": "test_complete_trade_requires_structural_labels",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase6_strategy_fidelity.py",
+      "test": "test_disagreements_are_field_specific",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase6_strategy_fidelity.py",
+      "test": "test_summary_needs_thirty_labels_for_readiness_inference",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase6_strategy_fidelity.py",
+      "test": "test_freshness_exposes_trigger_confirmation_delay",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase6_strategy_fidelity.py",
+      "test": "test_real_entry_publishes_fractal_and_locked_trigger_times",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_swing_is_invisible_until_third_right_candle_closes",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_confirmed_history_is_suffix_invariant_and_never_repaints",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_htf_direction_uses_close_not_wick",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_strict_two_of_three_and_no_single_strong_override",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_incomplete_htf_candle_is_excluded",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_bearish_close_bos_enters_at_close_with_retracement_stop",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_wick_only_cross_does_not_enter_and_trigger_remains",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_bullish_rules_are_an_exact_mirror",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_raw_confirmed_swing_is_not_a_proven_trail",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_neutral_htf_hard_blocks_every_entry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase7_expert_spec.py",
+      "test": "test_replay_emits_one_canonical_entry_without_lookahead",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_initial_stop_uses_relevant_pre_bos_structure",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_post_entry_candles_cannot_change_initial_stop",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_broad_pullback_wick_is_rejected_when_irrelevant",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_m1_wick_through_logical_level_survives",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_m1_body_close_beyond_level_invalidates",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_m5_wick_through_logical_level_survives",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_m5_small_marginal_close_respects_tolerance",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_m5_momentum_close_beyond_boundary_invalidates",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_emergency_stop_is_separate_and_wider",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_raw_post_entry_fractal_cannot_move_trail",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_proven_continuation_hl_moves_buy_protection",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_proven_continuation_lh_moves_sell_protection",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_trailing_protection_never_loosens",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_opposing_meaningful_bos_exits",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_micro_opposing_bos_does_not_force_exit",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_first_stop_alone_does_not_arm_reentry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_fresh_qualified_bos_arms_only_one_reentry",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_second_failure_permanently_closes_parent_setup",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_brand_new_parent_setup_resets_one_reentry_allowance",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_m1_to_m5_management_transition_never_loosens",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_qualified_m5_pullback_can_use_current_m1_close_bos",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_chart_audit_uses_canonical_decision_time_contracts",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_future_structures_are_rejected",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_stale_trigger_is_rejected_by_chart_contract",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_no_order_api_is_imported_or_called",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_phase9_steve_management_contract.py",
+      "test": "test_management_research_parameters_load_from_config",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_setup_consumption.py",
+      "test": "test_micro_noise_does_not_create_consumable_setup",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_setup_consumption.py",
+      "test": "test_canonical_candidate_setup_id_is_never_none",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_setup_lifecycle.py",
+      "test": "test_evolving_pullback_keeps_one_setup_id",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_setup_lifecycle.py",
+      "test": "test_consumption_blocks_same_setup_identity",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_setup_lifecycle.py",
+      "test": "test_new_post_completion_pullback_gets_new_id",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_setup_lifecycle.py",
+      "test": "test_reentry_is_hard_limited_to_one",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_six_entry_origin_regression.py",
+      "test": "test_strategy_semantics_require_bos_before_pullback",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_six_entry_origin_regression.py",
+      "test": "test_all_six_legacy_candidates_are_blocked_by_default",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_six_entry_origin_regression.py",
+      "test": "test_fixture_preserves_accepted_six_entry_baseline",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_six_entry_origin_regression.py",
+      "test": "test_micro_boundaries_merge_without_changing_identity",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_six_entry_origin_regression.py",
+      "test": "test_post_consumption_cycle_requires_later_start",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_six_entry_origin_regression.py",
+      "test": "test_new_impulse_terminates_old_compression",
+      "classification": "LEGACY_REGRESSION"
+    },
+    {
+      "file": "test_strategy_bible_contract.py",
+      "test": "test_bible_exists_and_contains_required_sections",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_strategy_bible_contract.py",
+      "test": "test_bible_names_every_core_module",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_strategy_bible_contract.py",
+      "test": "test_bible_names_every_test_expectation",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    },
+    {
+      "file": "test_strategy_bible_contract.py",
+      "test": "test_bible_documents_director_ownership_and_runtime_parameters",
+      "classification": "ACTIVE_AUTHORITATIVE"
+    }
+  ]
+}

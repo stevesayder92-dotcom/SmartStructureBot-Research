@@ -1,0 +1,80 @@
+[
+  {
+    "account_id": "CANONICAL-PAPER-ZAR",
+    "action": "MARGIN_CALL",
+    "attempt_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381|ENTRY_140",
+    "balance_after": 1000.0,
+    "causal_valid": true,
+    "costs": {},
+    "details": {
+      "margin_level": 99.4340859391
+    },
+    "equity_after": 991.9350983062,
+    "execution_event_id": "CANONICAL-PAPER-ZAR|EXEC|000004",
+    "fill_price": null,
+    "gross_pl": 0.0,
+    "margin_after": 997.58054689,
+    "net_pl": 0.0,
+    "parent_state_hash": "623cd9d8b94fea6345998822149684d4b79b47ca78f3680f84fff6e3edda3f7b",
+    "replay_event_id": "S1B-GER40Cash-20260804T112813-196b791da6|EVENT|000414",
+    "requested_price": null,
+    "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381",
+    "setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381",
+    "state_hash": "083c1aadf8d53e0f6e59d386c6483cbdf86e233994d6cfc572c1a0bd6f86c7a7",
+    "symbol": "GER40Cash#",
+    "timestamp": 1784118660.0,
+    "volume": 0.0
+  },
+  {
+    "account_id": "CANONICAL-PAPER-ZAR",
+    "action": "MARGIN_WARNING",
+    "attempt_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381|ENTRY_140",
+    "balance_after": 1000.0,
+    "causal_valid": true,
+    "costs": {},
+    "details": {
+      "margin_level": 101.1979435098
+    },
+    "equity_after": 1009.5309983062,
+    "execution_event_id": "CANONICAL-PAPER-ZAR|EXEC|000005",
+    "fill_price": null,
+    "gross_pl": 0.0,
+    "margin_after": 997.58054689,
+    "net_pl": 0.0,
+    "parent_state_hash": "083c1aadf8d53e0f6e59d386c6483cbdf86e233994d6cfc572c1a0bd6f86c7a7",
+    "replay_event_id": "S1B-GER40Cash-20260804T112813-196b791da6|EVENT|000415",
+    "requested_price": null,
+    "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381",
+    "setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381",
+    "state_hash": "faef6d581dbd6f8601c233411d78f52189ce7344f28060a5d6d57876fa7c824b",
+    "symbol": "GER40Cash#",
+    "timestamp": 1784118720.0,
+    "volume": 0.0
+  },
+  {
+    "account_id": "CANONICAL-PAPER-ZAR",
+    "action": "MARGIN_WARNING",
+    "attempt_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_381|REENTRY_193",
+    "balance_after": 1124.3796198694,
+    "causal_valid": true,
+    "costs": {},
+    "details": {
+      "margin_level": 101.2729578666
+    },
+    "equity_after": 1115.1763461079,
+    "execution_event_id": "CANONICAL-PAPER-ZAR|EXEC|000012",
+    "fill_price": null,
+    "gross_pl": 0.0,
+    "margin_after": 1101.15905529,
+    "net_pl": 0.0,
+    "parent_state_hash": "90b128865c55acb84ee41c62c02564fb15575c97a85f81172b9e4068a92eb4c3",
+    "replay_event_id": "S1B-GER40Cash-20260804T112813-196b791da6|EVENT|000467",
+    "requested_price": null,
+    "sequence_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_411",
+    "setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_411",
+    "state_hash": "cb8de0b7a01588989c526e382f8731413c1ab384fce4e5fdbcc79adbee6e49e3",
+    "symbol": "GER40Cash#",
+    "timestamp": 1784121840.0,
+    "volume": 0.0
+  }
+]

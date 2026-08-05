@@ -1,0 +1,350 @@
+[
+  {
+    "chart_file": "acceptance_charts/01_s1b-accept-01.png",
+    "claim": "The same setup must be blocked when 0.01 lot exceeds configured risk.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "allowed": false,
+      "broker minimum": "0.01",
+      "capital": "R500.00",
+      "ideal lots": "0.0055",
+      "minimum logical risk": "R9.15"
+    },
+    "number": 1,
+    "orders_called": 0,
+    "result": "MINIMUM_VOLUME_OVER_RISK",
+    "scenario_id": "S1B-ACCEPT-01",
+    "status": "PASS",
+    "title": "R500 minimum-volume protection"
+  },
+  {
+    "chart_file": "acceptance_charts/02_s1b-accept-02.png",
+    "claim": "Only execution feasibility changes; the Director signal stays identical.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "actual risk": "R9.15",
+      "allowed": true,
+      "capital": "R1,000.00",
+      "final volume": "0.01 lot",
+      "planned risk": "R10.00"
+    },
+    "number": 2,
+    "orders_called": 0,
+    "result": "ROUNDED_WITHIN_TOLERANCE",
+    "scenario_id": "S1B-ACCEPT-02",
+    "status": "PASS",
+    "title": "R1,000 accepts the identical setup"
+  },
+  {
+    "chart_file": "acceptance_charts/03_s1b-accept-03.png",
+    "claim": "A buy fills at ask plus deterministic adverse slippage.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "ask": "1.10012",
+      "bid": "1.10000",
+      "final fill": "1.10013",
+      "slippage": "0.60 pt",
+      "spread": "12.0 pt"
+    },
+    "number": 3,
+    "orders_called": 0,
+    "result": "FILLED_PAPER_ONLY",
+    "scenario_id": "S1B-ACCEPT-03",
+    "status": "PASS",
+    "title": "M1 entry: bid, ask, spread and slippage"
+  },
+  {
+    "chart_file": "acceptance_charts/04_s1b-accept-04.png",
+    "claim": "A wider causal stop must reduce or block volume without moving the stop.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "M1 distance": "10 pips",
+      "M1-style stop lots": "0.02",
+      "M5 distance": "30 pips",
+      "M5-style stop lots": "0.01"
+    },
+    "number": 4,
+    "orders_called": 0,
+    "result": "VOLUME_RECALCULATED",
+    "scenario_id": "S1B-ACCEPT-04",
+    "status": "PASS",
+    "title": "M5 stop distance changes executable volume"
+  },
+  {
+    "chart_file": "acceptance_charts/05_s1b-accept-05.png",
+    "claim": "The displayed result is net, not candle-to-candle gross.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "balance": "R10,138.55",
+      "costs": "R7.85",
+      "gross": "R146.40",
+      "net": "R138.55"
+    },
+    "number": 5,
+    "orders_called": 0,
+    "result": "NET_WIN",
+    "scenario_id": "S1B-ACCEPT-05",
+    "status": "PASS",
+    "title": "Winning trade after all modeled costs"
+  },
+  {
+    "chart_file": "acceptance_charts/06_s1b-accept-06.png",
+    "claim": "Loss, spread, slippage and commission remain visible and attributable.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "balance": "R9,918.95",
+      "costs": "R7.85",
+      "gross": "R-73.20",
+      "net": "R-81.05"
+    },
+    "number": 6,
+    "orders_called": 0,
+    "result": "NET_LOSS",
+    "scenario_id": "S1B-ACCEPT-06",
+    "status": "PASS",
+    "title": "Losing trade after costs"
+  },
+  {
+    "chart_file": "acceptance_charts/07_s1b-accept-07.png",
+    "claim": "Re-entry receives a fresh fill and costs while retaining parent sequence identity.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "attempt 1": "R-81.05",
+      "attempt 2": "R175.21",
+      "attempt count": 2,
+      "combined": "R94.17"
+    },
+    "number": 7,
+    "orders_called": 0,
+    "result": "SEQUENCE_COMPLETE",
+    "scenario_id": "S1B-ACCEPT-07",
+    "status": "PASS",
+    "title": "One sequence, two monetary attempts"
+  },
+  {
+    "chart_file": "acceptance_charts/08_s1b-accept-08.png",
+    "claim": "The broker rounds the close and updates remaining volume.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "closed volume": "0.01",
+      "initial volume": "0.02",
+      "net partial": "R69.32",
+      "remaining volume": "0.01"
+    },
+    "number": 8,
+    "orders_called": 0,
+    "result": "PARTIAL_FILLED",
+    "scenario_id": "S1B-ACCEPT-08",
+    "status": "PASS",
+    "title": "Executable TP1 partial"
+  },
+  {
+    "chart_file": "acceptance_charts/09_s1b-accept-09.png",
+    "claim": "A non-executable half of 0.01 lot must not be invented.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "ledger action": "PARTIAL_REJECTED",
+      "open volume": "0.01 lot",
+      "position after": "0.01 lot",
+      "requested fraction": "50%"
+    },
+    "number": 9,
+    "orders_called": 0,
+    "result": "PARTIAL_NOT_EXECUTABLE_MINIMUM_VOLUME",
+    "scenario_id": "S1B-ACCEPT-09",
+    "status": "PASS",
+    "title": "Minimum-volume partial rejection"
+  },
+  {
+    "chart_file": "acceptance_charts/10_s1b-accept-10.png",
+    "claim": "A wick through the logical stop survives while the wider emergency stop remains intact.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "balance unchanged": true,
+      "candle low": "1.09780",
+      "emergency stop": "1.09720",
+      "floating": "R-57.39",
+      "logical stop": "1.09800"
+    },
+    "number": 10,
+    "orders_called": 0,
+    "result": "POSITION_REMAINS_OPEN",
+    "scenario_id": "S1B-ACCEPT-10",
+    "status": "PASS",
+    "title": "Logical wick survival"
+  },
+  {
+    "chart_file": "acceptance_charts/11_s1b-accept-11.png",
+    "claim": "Catastrophic wick protection fills with a larger adverse slippage factor.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "fill": "1.09717",
+      "net": "R-110.90",
+      "requested emergency": "1.09720",
+      "slippage": "2.68 pt"
+    },
+    "number": 11,
+    "orders_called": 0,
+    "result": "EMERGENCY_STOP_EXIT",
+    "scenario_id": "S1B-ACCEPT-11",
+    "status": "PASS",
+    "title": "Emergency stop with emergency slippage"
+  },
+  {
+    "chart_file": "acceptance_charts/12_s1b-accept-12.png",
+    "claim": "USD must never be displayed as if it were rand.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "account P/L": "R183.00",
+      "native": "$10.00",
+      "rate": "R18.30/USD",
+      "source": "STATIC_RESEARCH_RATE"
+    },
+    "number": 12,
+    "orders_called": 0,
+    "result": "STATIC_RESEARCH_RATE",
+    "scenario_id": "S1B-ACCEPT-12",
+    "status": "PASS",
+    "title": "Native P/L converted to ZAR"
+  },
+  {
+    "chart_file": "acceptance_charts/13_s1b-accept-13.png",
+    "claim": "Account stress is published before call and stop-out thresholds.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "equity": "R140.00",
+      "margin level": "140.0%",
+      "used margin": "R100.00",
+      "warning threshold": "150%"
+    },
+    "number": 13,
+    "orders_called": 0,
+    "result": "LOW_MARGIN_WARNING",
+    "scenario_id": "S1B-ACCEPT-13",
+    "status": "PASS",
+    "title": "Margin warning"
+  },
+  {
+    "chart_file": "acceptance_charts/14_s1b-accept-14.png",
+    "claim": "Drawdown uses the chronological equity peak, not only starting balance.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "current equity": "R880.00",
+      "drawdown": "R270.00",
+      "drawdown %": "23.48%",
+      "peak equity": "R1,150.00",
+      "starting": "R1,000.00"
+    },
+    "number": 14,
+    "orders_called": 0,
+    "result": "DRAWDOWN_TRACKED",
+    "scenario_id": "S1B-ACCEPT-14",
+    "status": "PASS",
+    "title": "Account drawdown from peak equity"
+  },
+  {
+    "chart_file": "acceptance_charts/15_s1b-accept-15.png",
+    "claim": "Peak unrealized opportunity and final net result are separate facts.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "classification": "REVIEW PROMPT \u2014 NOT AUTO-TRUTH",
+      "final net": "R-25.00",
+      "giveback": "R115.00",
+      "peak floating": "R90.00"
+    },
+    "number": 15,
+    "orders_called": 0,
+    "result": "WINNER_TO_LOSER_FLAG",
+    "scenario_id": "S1B-ACCEPT-15",
+    "status": "PASS",
+    "title": "Winner turned loser is visible"
+  },
+  {
+    "chart_file": "acceptance_charts/16_s1b-accept-16.png",
+    "claim": "Profit alone does not force an unearned exit or arbitrary trail.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "Director action": "NO_ACTION",
+      "current floating": "R85.35",
+      "peak floating": "R140.25",
+      "position status": "OPEN"
+    },
+    "number": 16,
+    "orders_called": 0,
+    "result": "RUNNER_OPEN",
+    "scenario_id": "S1B-ACCEPT-16",
+    "status": "PASS",
+    "title": "Long runner preserved"
+  },
+  {
+    "chart_file": "acceptance_charts/17_s1b-accept-17.png",
+    "claim": "Economic experiments cannot mutate canonical money or strategy state.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "canonical equity": "R4,914.19",
+      "isolation": true,
+      "shadow count": 6,
+      "strategy hash": "f06d318fbbc031b9"
+    },
+    "number": 17,
+    "orders_called": 0,
+    "result": "ISOLATION_PASS",
+    "scenario_id": "S1B-ACCEPT-17",
+    "status": "PASS",
+    "title": "Canonical versus isolated shadow accounts"
+  },
+  {
+    "chart_file": "acceptance_charts/18_s1b-accept-18.png",
+    "claim": "The accepted frozen Trade 51 prefix is replayed through the same paper authority.",
+    "evidence_origin": "FROZEN_CLOSED_CANDLE_REPLAY",
+    "facts": {
+      "ending balance": "R4,994.24",
+      "events": 40,
+      "ledger rows": 4,
+      "orders called": 0
+    },
+    "number": 18,
+    "orders_called": 0,
+    "result": "FROZEN_REPLAY_COMPLETE",
+    "scenario_id": "S1B-ACCEPT-18",
+    "status": "PASS",
+    "title": "Trade 51 full monetary replay"
+  },
+  {
+    "chart_file": "acceptance_charts/19_s1b-accept-19.png",
+    "claim": "The server accepts a bounded UTC range from the portable data library\u2014not a browser filesystem path.",
+    "evidence_origin": "PORTABLE_LIBRARY_RANGE_VALIDATION",
+    "facts": {
+      "events": 8,
+      "orders called": 0,
+      "portable source": "C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_RealisticPaperAccount_20260803\\simulator_data\\library\\AUDUSD\\M1.csv|C:\\Users\\ST103\\Documents\\Codex\\2026-07-18\\i\\work\\SmartStructureBot_RealisticPaperAccount_20260803\\simulator_data\\library\\AUDUSD\\M5.csv",
+      "requested UTC": "2026-07-14T22:15:00+00:00 to 2026-07-14T23:15:00+00:00",
+      "status": "RANGE_BUILD_COMPLETE",
+      "symbol": "AUDUSD#",
+      "validation": "PASS"
+    },
+    "number": 19,
+    "orders_called": 0,
+    "result": "RANGE_BUILD_COMPLETE",
+    "scenario_id": "S1B-ACCEPT-19",
+    "status": "PASS",
+    "title": "Arbitrary configured symbol/date-range replay"
+  },
+  {
+    "chart_file": "acceptance_charts/20_s1b-accept-20.png",
+    "claim": "Replaying the same immutable prefix and seed must reproduce its full economic hash.",
+    "evidence_origin": "DETERMINISTIC_ACCEPTANCE_CONTRACT",
+    "facts": {
+      "balance equal": true,
+      "first hash": "16114470b81a5442e2d3",
+      "hashes equal": true,
+      "second hash": "16114470b81a5442e2d3"
+    },
+    "number": 20,
+    "orders_called": 0,
+    "result": "DETERMINISTIC_MATCH",
+    "scenario_id": "S1B-ACCEPT-20",
+    "status": "PASS",
+    "title": "Rewind reproduces identical fills and balance"
+  }
+]
