@@ -5,6 +5,8 @@ from typing import Any, Dict, Iterable, Mapping, Optional
 
 import pandas as pd
 
+from core.fibonacci_contract import classify_remaining
+
 
 def _f(value: Any) -> float:
     return float(value)
@@ -149,16 +151,31 @@ class M1EntryQualityEngine:
         bos_raw = min(1.0, body_atr / 1.0) * 0.45 + min(1.0, max(0.0, close_beyond) / atr / 0.35) * 0.30 + min(1.0, body / median_body / 2.0) * 0.15 + max(0.0, 1.0 - wick_ratio) * 0.10
         pre_ranges = pre["high"].astype(float) - pre["low"].astype(float) if not pre.empty else pd.Series(dtype=float)
         compression_raw = min(1.0, body / max(float(pre_ranges.mean()) if not pre_ranges.empty else atr, 1e-12))
-        zone = str(parent.get("fibonacci_zone") or "")
+        zero = parent.get("fib_zero_price")
+        hundred = parent.get("fib_hundred_price")
+        if zero is not None and hundred is not None and float(hundred) != float(zero):
+            impulse = abs(float(hundred) - float(zero))
+            remaining = (
+                (float(entry_price) - float(zero)) / impulse
+                if direction == "BULLISH"
+                else (float(zero) - float(entry_price)) / impulse
+            )
+            zone = classify_remaining(remaining)
+        else:
+            # Compatibility for explicitly causal test/legacy callers that do
+            # not yet publish fixed Fibonacci anchors.
+            remaining = None
+            zone = str(parent.get("fibonacci_zone") or "")
         zone_raw = 1.0 if zone == "STEVE_PRIMARY_DEEP_SWEET_SPOT" else 0.8 if "38_2" in zone or "61_8" in zone else 0.55
         risk = max(abs(float(entry_price) - float(logical_stop)), 1e-12)
-        objective = float(parent.get("fib_hundred_price", parent.get("m5_entry_price", entry_price)))
+        objective = float(parent.get("fib_hundred_price", entry_price))
         rr = abs(objective - float(entry_price)) / risk
         location_raw = zone_raw * 0.65 + min(1.0, rr / 2.0) * 0.35
-        seconds_saved = max(0.0, float(parent["m5_entry_time"]) - float(data.iloc[int(entry_index)]["time"]) - 60.0)
-        m5_risk = abs(float(parent["m5_entry_price"]) - float(parent["m5_logical_stop"]))
-        stop_reduction = max(0.0, (m5_risk - risk) / max(m5_risk, 1e-12))
-        timing_raw = min(1.0, seconds_saved / 900.0) * 0.60 + min(1.0, stop_reduction / 0.40) * 0.40
+        # S2A.1: the former timing component compared this earlier decision to
+        # an eventual M5 entry/stop.  That is post-hoc outcome information.  Its
+        # configured ten-point allocation intentionally remains unassigned;
+        # thresholds and all other weights are unchanged.
+        timing_raw = 0.0
         alternating = 0
         wick_density = 0.0
         if len(recent) > 1:
@@ -180,14 +197,23 @@ class M1EntryQualityEngine:
         components = {name: round(_clamp(raw[name] * weight, 0.0, weight), 3) for name, weight in self.config.m1_quality_weights.items()}
         score = round(sum(components.values()), 3)
         grade, classification = _grade(score, self.config)
-        positive = [name.upper() for name, value in raw.items() if value >= 0.68]
-        negative = [name.upper() for name, value in raw.items() if value < 0.45]
+        positive = [name.upper() for name, value in raw.items() if name != "timing_advantage" and value >= 0.68]
+        negative = [name.upper() for name, value in raw.items() if name != "timing_advantage" and value < 0.45]
         policy = self.config.m1_risk_policy[grade]
+        post_hoc: Dict[str, Any] = {
+            "availability": "UNAVAILABLE",
+            "analytics_only": True,
+            "influences_causal_quality": False,
+            "minutes_saved_vs_eventual_m5": None,
+            "stop_reduction_percent_vs_eventual_m5": None,
+            "reason": "Published by the separate post-hoc outcome analytics layer",
+        }
         return {
             "owner": self.owner,
             "state": classification,
             "structurally_valid": True,
             "m1_quality_score": score,
+            "causal_quality_score": score,
             "grade": grade,
             "classification": classification,
             "component_scores": components,
@@ -201,8 +227,16 @@ class M1EntryQualityEngine:
             "bos_body_atr": round(body_atr, 4),
             "close_beyond_trigger_atr": round(max(0.0, close_beyond) / atr, 4),
             "overlap_ratio": round(float(overlap_ratio), 4),
-            "estimated_minutes_saved": round(seconds_saved / 60.0, 2),
-            "estimated_stop_reduction_percent": round(stop_reduction * 100.0, 2),
+            "entry_price": float(entry_price),
+            "logical_stop": float(logical_stop),
+            "causal_stop_distance": round(risk, 10),
+            "causal_fibonacci_zone": zone,
+            "causal_remaining_impulse_ratio": (
+                round(float(remaining), 6) if remaining is not None else None
+            ),
+            "excluded_weight_points": self.config.m1_quality_weights["timing_advantage"],
+            "quality_basis": "CAUSAL_M1_ENTRY_CLOSE_ONLY",
+            "post_hoc_advantage_diagnostics": post_hoc,
             "causal_valid": int(trigger_available_index) <= int(entry_index),
             "as_of_index": int(entry_index),
             "closed_candles_only": True,

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import pickle
 from pathlib import Path
@@ -234,7 +235,7 @@ class FinalPrefixCausalityTest(unittest.TestCase):
     def test_trade_51_chronological_regression(self):
         with (ROOT / "research_data_sync" / "sequence_elite_source.pkl").open("rb") as handle:
             pool, datasets, _ = pickle.load(handle)
-        baseline = json.loads((ROOT / "final_fidelity_patch_v1_evidence" / "final_fidelity_patch_v1_audit.json").read_text(encoding="utf-8"))
+        baseline = json.loads((ROOT / "test_data" / "final_fidelity_patch_v1_population.json").read_text(encoding="utf-8"))
         setup = baseline["rows"][50]["parent_m5_setup_id"]
         row = next(item for item in pool if item["parent_m5_setup_id"] == setup)
         failure = row["outcome"]["first_failure_time"]
@@ -251,9 +252,11 @@ class FinalPrefixCausalityTest(unittest.TestCase):
             self.assertGreaterEqual(result["winner"]["entry_time"], result["extension_proven_at_time"])
 
     def test_frozen_60_first_entry_population_remains_unchanged(self):
-        baseline = json.loads((ROOT / "final_fidelity_patch_v1_evidence" / "final_fidelity_patch_v1_audit.json").read_text(encoding="utf-8"))
-        previous = json.loads((ROOT / "presimulator_repair_evidence" / "presimulator_repair_audit.json").read_text(encoding="utf-8"))
-        self.assertEqual([row["parent_m5_setup_id"] for row in baseline["rows"]], [row["parent_m5_setup_id"] for row in previous["rows"]])
+        baseline = json.loads((ROOT / "test_data" / "final_fidelity_patch_v1_population.json").read_text(encoding="utf-8"))
+        setup_ids = [row["parent_m5_setup_id"] for row in baseline["rows"]]
+        digest = hashlib.sha256("\n".join(setup_ids).encode("utf-8")).hexdigest()
+        self.assertEqual(len(setup_ids), 60)
+        self.assertEqual(digest, "ba994b6aa0cbdd899851944000b79dd903e63b92497e5b58627997151a255476")
 
     def test_no_future_data(self):
         source = (ROOT / "core" / "prefix_causality.py").read_text(encoding="utf-8")
@@ -265,7 +268,7 @@ class FinalPrefixCausalityTest(unittest.TestCase):
         self.assertLessEqual(event["available_at_index"], 6)
 
     def test_no_duplicate_first_entries(self):
-        baseline = json.loads((ROOT / "final_fidelity_patch_v1_evidence" / "final_fidelity_patch_v1_audit.json").read_text(encoding="utf-8"))
+        baseline = json.loads((ROOT / "test_data" / "final_fidelity_patch_v1_population.json").read_text(encoding="utf-8"))
         ids = [row["parent_m5_setup_id"] for row in baseline["rows"]]
         self.assertEqual(len(ids), len(set(ids)))
 

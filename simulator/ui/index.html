@@ -21,16 +21,7 @@
         <label>Starting capital<select id="capitalPreset"><option value="500">R500</option><option value="1000" selected>R1,000</option><option value="2500">R2,500</option><option value="5000">R5,000</option><option value="custom">Custom</option></select></label>
         <label>Custom capital<input id="customCapital" type="number" min="1" step="0.01" value="1000"></label>
         <label>Risk model<select id="riskModel"><option>FIXED_PERCENTAGE_OF_CURRENT_BALANCE</option><option>FIXED_PERCENTAGE_OF_CURRENT_EQUITY</option><option>FIXED_RAND_AMOUNT</option><option>FIXED_MINIMUM_BROKER_VOLUME</option><option>GRADE_ADJUSTED_RESEARCH_RISK</option></select></label>
-        <label>
-        Risk %
-        <input
-            id="riskPercent"
-            type="number"
-            min="0.10"
-            max="25"
-            step="0.10"
-            value="15">
-        </label>
+        <label>Risk %<select id="riskPercent"><option>0.25</option><option>0.5</option><option selected>1.0</option><option>1.5</option></select></label>
         <label>Fixed risk (R)<input id="fixedRisk" type="number" min="0.01" step="0.01" value="10"></label>
         <label>Maximum logical risk %<input id="maxRisk" type="number" min="0.01" step="0.1" value="2.0"></label>
         <label>Maximum emergency risk %<input id="maxEmergencyRisk" type="number" min="0.01" step="0.1" value="2.5"></label>

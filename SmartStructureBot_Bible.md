@@ -2358,3 +2358,301 @@ accounting, causal prefix invariance, rewind, shadow isolation, account-size
 signal invariance, intrabar ambiguity and order/broker safety. Acceptance also
 requires all 37 Phase S1 tests and all 291 inherited strategy tests to remain
 green. Visual evidence complements but never replaces these tests.
+
+## Phase S2A — canonical entry-funnel truth instrumentation
+
+Phase S2A is an audit-only layer. It cannot qualify a retracement, loosen a
+filter, change a threshold, select an entry, alter a Director action, mutate a
+paper account used by production replay, or call an order API. Its only
+authority is to observe immutable outputs already published by the canonical
+engines, Director, synchronized M1 child engine and isolated paper execution.
+
+The audited funnel is:
+
+```text
+HTF context
+-> origin BOS
+-> protected structure
+-> retracement birth
+-> retracement significance
+-> retracement qualification
+-> parent activation
+-> M1 child monitoring
+-> M1 trigger candidate
+-> M5 trigger candidate
+-> entry validation
+-> SystemDirector commitment
+-> isolated paper-execution probe
+```
+
+Every S2A value must be copied from a canonical engine output or immutable
+canonical event/state object. A value absent from those contracts is written
+as `UNAVAILABLE`; no proxy, score substitution, acceptance-membership
+inference or fabricated default is permitted. In particular, Fibonacci
+remaining impulse is not retracement significance, pool membership is not a
+counter-structure count or score component, candidate index is not
+qualification index, and Fib zero index is not protected-structure index.
+
+M1 audit events are classified as
+`M1_TRIGGER_BEFORE_PARENT_ACTIVE`,
+`M1_TRIGGER_WHILE_PARENT_ACTIVE`,
+`M1_TRIGGER_AFTER_PARENT_EXPIRED`,
+`M1_TRIGGER_INVALID_MICRO_NOISE`, `M1_TRIGGER_WICK_ONLY`,
+`M1_TRIGGER_WRONG_DIRECTION`, or `OTHER`. Event count and unique parent setup
+count are always published separately. Repeated observations of the same
+canonical M1 event are deduplicated by immutable setup/event identity and may
+never become additional missed trades.
+
+Qualification latency uses only canonical availability times. Retracement
+birth, first meaningful counter move, qualification, M1 trigger, valid M1
+body-close BOS, M5 BOS and actual committed entry retain separate timestamps.
+The audit distinguishes a future leak from causal confirmation latency:
+waiting for the right-side swing confirmation is latency, while allowing a
+later suffix to change an already published earlier decision is leakage.
+
+Audit mode processes every usable closed row in the portable library. It may
+batch symbols chronologically for runtime reasons but may not downsample
+candidates. The S2A evidence package owns funnel rows, parent timing, M1
+events, blocker counts, a reconciled summary, report and reproducibility
+manifest. Its tests require observer non-mutation, exact count reconciliation,
+explainable setup lifecycle, setup/event count separation, parent timing,
+deterministic replay, suffix invariance, closed-candle safety and zero order
+API calls.
+
+### Phase S2A test expectations
+
+- `test_observer_does_not_mutate_canonical_inputs`
+- `test_exact_funnel_count_reconciliation`
+- `test_every_setup_has_explainable_lifecycle`
+- `test_multiple_m1_events_are_not_multiple_setups`
+- `test_parent_active_timing_classification`
+- `test_missing_canonical_metric_is_unavailable_not_substituted`
+- `test_deterministic_observer_replay`
+- `test_suffix_invariance_of_earlier_pipeline_decision`
+- `test_swing_availability_timestamp_is_respected`
+- `test_unfinished_candle_is_rejected_by_audit_data_contract`
+- `test_audit_modules_contain_no_order_send_call`
+
+## Phase S2A.1 — synchronized M1 causality repair and early-entry shadow audit
+
+S2A.1 has priority over entry-frequency optimisation. Its production change is
+strictly a causality repair: synchronized M1 decisions may depend only on
+closed-candle facts available at the M1 decision close. HTF policy, existing
+structural filters, quality thresholds, canonical parent activation and order
+execution remain unchanged. Early entries found before canonical parent
+`ACTIVE` are research shadows only and have no authority over the Director,
+entry arbiter, paper account or lifecycle.
+
+### Parent clocks and ownership
+
+```text
+M5 anchor swing occurs
+  -> anchor confirmed after ENGINE_SENSITIVITY right candles
+  -> parent ARMED at the close of the anchor-confirmation candle
+M5 opposing counter swing occurs
+  -> counter confirmed after ENGINE_SENSITIVITY right candles
+  -> parent ACTIVE at the close of the counter-confirmation candle
+M5 failure-trigger swing occurs
+  -> failure trigger confirmed after right-side confirmation
+  -> candidate.qualified_at = failure-trigger confirmation availability index
+M1 trigger-side swing occurs
+  -> trigger becomes available only after M1 right-side confirmation
+  -> a correctly directed body closes beyond it
+  -> legal M1 entry time is that M1 candle close, subject to every existing gate
+M5 body-close BOS occurs
+  -> M5 fallback entry time is that M5 candle close
+```
+
+`candidate["qualified_at"]` therefore means
+`m5_failure_trigger_confirmed_at_index`; it is not a first legal trade-entry
+timestamp. `ARMED` means the parent pullback anchor is causally confirmed and
+M1 observation may begin. `ACTIVE` means the required M5 counter swing is
+causally confirmed and canonical M1 execution is permitted.
+
+Every parent contract has two explicitly separated sections:
+
+- `causal_parent_context`: identity, direction and only parent facts known by
+  the decision time, each with an availability class and as-of time/index;
+- `retrospective_m5_outcome`: eventual M5 entry, stop and comparison metrics,
+  marked analytics-only.
+
+Retrospective M5 outcome fields may never affect M1 component scores, total,
+grade, policy, observe-only state, entry readiness, entry price, logical stop,
+Director commitment or first-valid arbitration. Timing advantage versus an
+eventual M5 entry and stop reduction versus an eventual M5 stop are post-hoc
+diagnostics only. Removing their former score contribution does not authorize
+weight redistribution or threshold tuning.
+
+### Complete synchronized-M1 causal decision tree
+
+```text
+take causal parent snapshot as of decision close T
+  -> confirm parent ownership and dominant protection
+  -> use only M1 candles closed by T
+  -> find causally available trigger-side swings
+  -> require opposing counter structure
+  -> require complete initial/counter/trigger sequence
+  -> require current displacement and minimum counter bars
+  -> require correctly directed body-close BOS (wick-only remains rejected)
+  -> require freshness and causal parent price boundary
+  -> derive logical stop from a swing available by entry close
+  -> compute causal M1 quality only
+  -> C_M1 remains OBSERVE_ONLY under unchanged thresholds
+  -> canonical execution remains blocked before parent ACTIVE
+  -> first valid canonical entry owns the parent once
+```
+
+For any M1 decision timestamp `T`, running the complete parent construction,
+child structure, quality and arbitration path on (A) the exact prefix, (B) the
+same prefix plus any suffix and (C) the same prefix plus a materially different
+suffix must publish identical trigger, readiness, entry index/price/stop,
+quality components/total/grade/policy, owner and arbitration decision at `T`.
+
+### ARMED-to-ACTIVE shadow audit
+
+The former label `M1_TRIGGER_BEFORE_PARENT_ACTIVE_REJECTED` described a
+trigger-side swing availability event, not a proven BOS. The canonical event
+name is `M1_TRIGGER_SIDE_SWING_BEFORE_PARENT_ACTIVE`. A shadow evaluator may
+continue each such event candle-by-candle through all existing counter,
+sequence, displacement, bar-count, body-close, body-direction, wick-only,
+micro-noise, staleness, boundary, stop-side, protection and causal-quality
+checks. Its terminal states include `SHADOW_VALID_EARLY_M1`,
+`SHADOW_NO_COUNTER_STRUCTURE`, `SHADOW_INCOMPLETE_SEQUENCE`,
+`SHADOW_MICRO_NOISE`, `SHADOW_NO_BODY_CLOSE_BOS`, `SHADOW_WICK_ONLY`,
+`SHADOW_STALE`, `SHADOW_OUTSIDE_PARENT`, `SHADOW_PROTECTION_BROKEN` and
+`SHADOW_LOW_CAUSAL_QUALITY`.
+
+Shadow eligibility uses no post-entry candle. Later M5 entry, later canonical
+owner, minutes earlier, price improvement, stop-distance improvement and MFE
+before canonical entry are analytics-only outcome comparisons. Event counts
+and unique setup counts are always separate. No S2A.1 shadow result may alter
+canonical behaviour.
+
+### Phase S2A.1 test expectations
+
+- pre-repair future-M5 dependency is captured and documented;
+- causal parent snapshots contain no post-decision fact;
+- M1 quality, entry, stop and arbitration are suffix invariant;
+- post-hoc M5 metrics cannot influence M1 quality;
+- shadow evaluation cannot alter canonical decisions;
+- trigger-side swings are not mislabeled as valid BOS events;
+- existing body-close and wick-only gates remain unchanged;
+- all inherited strategy and simulator tests remain green;
+- static and runtime evidence confirms no order API call.
+
+The executable S2A.1 contract names are:
+
+- `test_future_m5_outcome_cannot_change_earlier_m1_decision`
+- `test_causal_parent_snapshot_contains_no_post_t_fact`
+- `test_complete_m1_path_is_suffix_invariant`
+- `test_post_hoc_m5_metrics_cannot_influence_quality`
+- `test_shadow_evaluator_does_not_change_canonical_decision`
+- `test_pre_active_event_is_a_swing_not_a_bos_label`
+- `test_body_close_and_wick_only_protections_are_unchanged`
+- `test_s2a1_modules_contain_no_order_send_call`
+
+## Phase S2B — earned early M1 permission (research policy only)
+
+S2B tests one fixed hypothesis without changing the default strategy: after an
+exact M5 parent is causally `PARENT_ARMED`, a fully proven M1 continuation
+sequence may independently earn `EARLY_M1_PERMISSION_EARNED` before the
+existing M5 counter-confirmed `PARENT_ACTIVE` time. `ACTIVE` is never renamed,
+backdated or equated to `ARMED`. The default `m1_permission_policy` remains
+`COUNTER_CONFIRMED_ACTIVE`; the opt-in research value is
+`EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE`. The latter is forbidden in live or
+demo execution and has no order authority.
+
+### S2B ownership and lifecycle
+
+```text
+PARENT_NOT_AVAILABLE
+  -> M5 anchor confirmation publishes PARENT_ARMED
+  -> M1 observation is allowed, but ARMED alone is never entry permission
+  -> either:
+       complete owned M1 sequence + valid body-close BOS + all unchanged gates
+         -> EARLY_M1_PERMISSION_EARNED -> M1 attempt 1
+     or M5 counter confirmation
+         -> PARENT_ACTIVE -> existing M1 permission
+     or later M5 body-close continuation
+         -> existing M5 fallback attempt 1
+```
+
+The parent owner remains `SystemStateDirector`; M1 evidence is owned by
+`M1ChildStructureEngine`; permission evaluation is owned by
+`M1PermissionPolicyEngine`; first-entry commitment remains owned by the
+Director/first-valid arbiter. Ownership requires the exact setup,
+retracement, impulse-cycle, protection, direction and Fib-anchor identities.
+Timestamp proximity cannot establish ownership. A newer independent parent,
+failed dominant protection, unavailable causal Fib/location, consumption,
+invalidation or any post-decision dependency blocks early permission.
+
+### S2B decision tree and immutable entry contract
+
+```text
+policy is COUNTER_CONFIRMED_ACTIVE?
+  -> require normal PARENT_ACTIVE exactly as S2A.1
+policy is EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE?
+  -> before ARMED: reject
+  -> at ARMED with no complete M1 proof: observe only
+  -> before ACTIVE: require meaningful counter structure, complete sequence,
+     unchanged displacement and bar minimums, available fresh trigger,
+     correct-direction body-close BOS, non-wick/non-noise evidence, intact
+     parent boundary/protection, exact ownership and unchanged causal quality
+  -> all pass: publish EARLY_M1_PERMISSION_EARNED and normal M1 candidate
+  -> at/after ACTIVE: return the exact unchanged normal ACTIVE resolver result;
+     S2B arbitration has no authority in this interval
+```
+
+Entry is the valid BOS candle close. Initial logical stop is the accepted M1
+relevant-swing body edge available at entry; the separate emergency stop stays
+wider. No suffix, later M5 outcome, future stop, target, state, MFE/MAE or
+retrospective analytics may influence parent ownership, permission, trigger,
+quality, grade, policy, price, stops, arbitration or Director action at `T`.
+M1-to-M5 management may tighten but never widen protection.
+
+One parent still owns one first entry. An earned-early M1 entry consumes M1 and
+M5 attempt-1 competitors, preserves parent and sequence identity, and enters
+the unchanged management lifecycle as attempt 1. It creates no extra re-entry:
+the existing maximum remains one and all existing proof/blocking rules remain.
+No S2B score bonus exists; the ten S2A.1 points remain unassigned and every
+quality threshold, swing sensitivity, Fib rule, HTF rule, M5 rule, management,
+target, risk, cost and session contract is unchanged.
+
+For decision time `T`, prefix run A, actual-suffix run B, modified-suffix run C,
+future-reversal run D and different-later-M5-outcome run E must have identical
+parent ID, permission, trigger, BOS validity, quality components/total, grade,
+policy, entry readiness/index/time/price, logical/emergency stop, owner and
+Director action. Retrospective comparisons are post-hoc only.
+
+### Phase S2B test expectations
+
+- `test_early_m1_cannot_execute_before_parent_armed`
+- `test_parent_armed_alone_does_not_permit_entry`
+- `test_valid_m1_counter_structure_is_required`
+- `test_complete_m1_sequence_is_required`
+- `test_wick_only_bos_remains_rejected`
+- `test_wrong_body_direction_remains_rejected`
+- `test_one_candle_micro_noise_remains_rejected`
+- `test_stale_trigger_remains_rejected`
+- `test_protected_structure_failure_blocks_early_entry`
+- `test_unrelated_m1_structure_cannot_hijack_parent`
+- `test_timestamp_proximity_cannot_establish_ownership`
+- `test_early_m1_entry_occurs_on_bos_candle_close`
+- `test_first_early_m1_consumes_later_m1_m5_attempt1`
+- `test_one_parent_still_produces_one_first_entry`
+- `test_existing_one_reentry_limit_remains_one`
+- `test_m1_logical_stop_uses_existing_contract`
+- `test_post_entry_candles_cannot_rewrite_initial_stop`
+- `test_m1_to_m5_transition_never_widens_protection`
+- `test_future_suffix_cannot_change_early_permission`
+- `test_future_suffix_cannot_change_m1_quality`
+- `test_future_suffix_cannot_change_entry_price`
+- `test_future_suffix_cannot_change_logical_stop`
+- `test_future_m5_outcome_cannot_change_early_decision`
+- `test_first_valid_arbitration_uses_earliest_bos_not_trigger_loop_order`
+- `test_variant_returns_exact_baseline_resolution_after_active`
+- `test_retrospective_analytics_cannot_enter_entry_calculation`
+- `test_baseline_policy_reproduces_s2a1_results`
+- `test_shadow_diagnostics_cannot_mutate_director_action`
+- `test_no_duplicate_first_entry_after_early_m1`
+- `test_no_live_demo_order_api_enabled_or_called`
