@@ -9,7 +9,12 @@ from core.expert_strategy import build_expert_htf_context, confirmed_swings
 from core.pipeline_runner import PipelineOptions, run_pipeline
 from core.setup_lifecycle import PipelineRuntimeState
 from core.steve_trade_management import SteveTradeManagementEngine
-from core.synchronized_m1_replay import build_parent_contract, find_m1_child_entry
+from core.synchronized_m1_replay import (
+    COUNTER_CONFIRMED_ACTIVE,
+    EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE,
+    build_parent_contract,
+    find_m1_child_entry,
+)
 from simulator.adapters.dataset_adapter import ReplayDataset
 from simulator.config import SimulatorConfig
 from simulator.models.schema import json_safe, stable_hash
@@ -155,6 +160,103 @@ class CanonicalPipelineAdapter:
             "fibonacci": fibonacci,
         }
 
+    def _live_armed_parent_contract(
+        self, snapshot: dict[str, Any], m5_index: int
+    ) -> dict[str, Any] | None:
+        """Publish only the current causal ARMED/ACTIVE parent facts."""
+        setup = dict(snapshot.get("setup") or {})
+        retracement = dict(snapshot.get("retracement") or {})
+        context = dict(snapshot.get("context") or {})
+        protection = dict(snapshot.get("protection") or {})
+        fibonacci = dict(retracement.get("fibonacci") or setup.get("fibonacci") or {})
+        anchor = dict(retracement.get("origin_swing") or {})
+        counter = dict(retracement.get("counter_swing") or {})
+        if (
+            not setup.get("setup_id")
+            or str(setup.get("direction")) not in {"BULLISH", "BEARISH"}
+            or not anchor
+            or not fibonacci.get("available")
+            or not context.get("available")
+            or context.get("approved_direction") != setup.get("direction")
+            or not protection.get("available")
+        ):
+            return None
+        armed_index = int(anchor.get("confirmed_at_index", anchor["index"]))
+        if armed_index > int(m5_index):
+            return None
+        zero_index = int(fibonacci["fib_zero_index"])
+        zero_price = float(fibonacci["fib_zero_price"])
+        hundred_index = int(fibonacci["fib_hundred_index"])
+        hundred_price = float(fibonacci["fib_hundred_price"])
+        direction = str(setup["direction"])
+        setup_id = str(setup["setup_id"])
+        active_index = (
+            int(counter.get("confirmed_at_index", counter["index"]))
+            if counter
+            else None
+        )
+        base = {
+            "owner": "SystemStateDirector",
+            "state": "M5_PARENT_ACTIVE" if active_index is not None else "PARENT_ARMED",
+            "symbol": self.dataset.symbol,
+            "timeframe": "M5",
+            "parent_m5_setup_id": setup_id,
+            "parent_m5_retracement_id": f"{setup_id}|RETRACEMENT|{int(anchor['index'])}",
+            "parent_impulse_cycle_id": (
+                f"{self.dataset.symbol}|M5|IMPULSE|{zero_index}|{hundred_index}|{direction}"
+            ),
+            "parent_direction": direction,
+            "parent_protected_structure_id": (
+                f"{self.dataset.symbol}|M5|PROTECTION|{zero_index}|{zero_price:.10f}"
+            ),
+            "parent_fib_anchor_version": fibonacci.get("fib_anchor_version"),
+            "armed_time": float(self.dataset.m5.iloc[armed_index]["time"]) + 300.0,
+            "active_time": (
+                float(self.dataset.m5.iloc[active_index]["time"]) + 300.0
+                if active_index is not None
+                else None
+            ),
+            "m5_retracement_start_index": int(anchor["index"]),
+            "m5_retracement_start_time": float(self.dataset.m5.iloc[int(anchor["index"])]["time"]),
+            "price_boundary_low": min(zero_price, hundred_price),
+            "price_boundary_high": max(zero_price, hundred_price),
+            "dominant_protection_level": float(protection["level"]),
+            "dominant_protection_intact": protection.get("intact") is True,
+            "dominant_protection_as_of": "CURRENT_M5_PREFIX",
+            "remaining_impulse_ratio": fibonacci.get("remaining_impulse_ratio"),
+            "remaining_impulse_percent": fibonacci.get("remaining_impulse_percent"),
+            "retracement_depth_ratio": fibonacci.get("retracement_depth_ratio"),
+            "fibonacci_zone": fibonacci.get("remaining_zone", fibonacci.get("zone")),
+            "fibonacci_levels": dict(fibonacci.get("levels") or {}),
+            "fib_zero_index": zero_index,
+            "fib_zero_price": zero_price,
+            "fib_hundred_index": hundred_index,
+            "fib_hundred_price": hundred_price,
+            "fib_hundred_time": float(self.dataset.m5.iloc[hundred_index]["time"]),
+            "anchor_confirmed_at_index": armed_index,
+            "counter_confirmed_at_index": active_index,
+            "as_of_time": float(self.dataset.m5.iloc[int(m5_index)]["time"]) + 300.0,
+            "as_of_m5_index": int(m5_index),
+            "causal_htf_ownership_accepted": True,
+            "parent_invalidated": protection.get("intact") is False,
+            "parent_superseded": False,
+            "entry_opportunity_consumed": False,
+            "reentry_count": 0,
+            "maximum_reentries": 1,
+            "closed_candles_only": True,
+            "causal_valid": True,
+            "research_only": True,
+            "order_api_called": False,
+        }
+        base["causal_parent_context"] = deepcopy(base)
+        base["retrospective_m5_outcome"] = {
+            "availability": "PENDING",
+            "analytics_only": True,
+            "may_influence_canonical_m1": False,
+        }
+        base["contract_version"] = "S2B_CAUSAL_ARMED_PARENT_V1"
+        return base
+
     def evaluate_m1(
         self,
         *,
@@ -167,8 +269,17 @@ class CanonicalPipelineAdapter:
         if self.committed_entry is not None:
             self._update_m1_management(m1_index)
             return self.last_m1_report
+        variant = (
+            self.config.m1_permission_policy
+            == EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE
+        )
         candidate = self._live_parent_candidate(self.last_full_snapshot, m5_index)
-        if candidate is None:
+        armed_parent = (
+            self._live_armed_parent_contract(self.last_full_snapshot, m5_index)
+            if variant
+            else None
+        )
+        if candidate is None and armed_parent is None:
             self.last_m1_report = {
                 "state": "M1_PARENT_NOT_ACTIVE",
                 "entry_ready": False,
@@ -177,10 +288,11 @@ class CanonicalPipelineAdapter:
             }
             return self.last_m1_report
         try:
-            parent = build_parent_contract(
+            parent = armed_parent or build_parent_contract(
                 candidate=candidate,
                 m5_data=self.dataset.m5.iloc[: m5_index + 1],
                 symbol=self.dataset.symbol,
+                retrospective_outcome_available=False,
             )
         except ValueError as error:
             # A qualified parent may still lack a legally placed current stop.
@@ -194,10 +306,6 @@ class CanonicalPipelineAdapter:
                 "reason": "M1 monitoring waits until the canonical parent invalidation is valid.",
             }
             return self.last_m1_report
-        # The temporary M5 fallback boundary is the current replay event. It is
-        # used only to bound M1 discovery; it is never published as an entry.
-        parent["m5_entry_time"] = float(event_time)
-        parent["m5_entry_index"] = int(m5_index)
         # M1 child discovery needs only the parent monitoring window. Feeding
         # the full multi-month history made every replay tick quadratic while
         # adding no causal evidence to the current parent setup.
@@ -210,6 +318,8 @@ class CanonicalPipelineAdapter:
             parent=parent,
             m1_data=local_m1,
             sensitivity=2,
+            decision_time=float(event_time),
+            permission_policy=self.config.m1_permission_policy,
         )
         self.last_m1_report = json_safe(self._remap_indices(report, local_start))
         entry = dict(self.last_m1_report.get("entry") or {})
@@ -317,12 +427,28 @@ class CanonicalPipelineAdapter:
         }
         roots["structure"] = structure
         roots["m1_entry"] = deepcopy(self.last_m1_report)
+        roots["m1_permission"] = deepcopy(
+            self.last_m1_report.get("permission")
+            or {
+                "owner": "M1PermissionPolicyEngine",
+                "policy": self.config.m1_permission_policy,
+                "state": "M1_PERMISSION_NOT_AVAILABLE",
+                "early_permission_earned": False,
+                "causal_valid": True,
+                "research_only": True,
+                "live_demo_capable": False,
+                "order_api_called": False,
+            }
+        )
         roots["management"] = deepcopy(self.last_management)
         roots["identity"] = {
             "symbol": self.dataset.symbol,
             "strategy_version": self.config.strategy_version,
             "entry_owner": self.entry_owner,
             "setup_id": (full.get("setup") or {}).get("setup_id"),
+            "m1_permission_policy": self.config.m1_permission_policy,
+            "research_only": True,
+            "order_execution_enabled": False,
         }
         return json_safe(roots)
 

@@ -224,7 +224,7 @@ class PreSimulatorRepairTest(unittest.TestCase):
         self.assertTrue(all(event["commit_count"] == 1 for event in result["history"]))
 
     def test_frozen_population_has_no_duplicate_first_entries(self):
-        audit = json.loads((ROOT / "final_fidelity_patch_v1_evidence" / "final_fidelity_patch_v1_audit.json").read_text())
+        audit = json.loads((ROOT / "test_data" / "final_fidelity_patch_v1_population.json").read_text())
         keys = [(r["parent_m5_setup_id"], r["entry_time"]) for r in audit["rows"]]
         self.assertEqual(len(keys), len(set(keys)))
 

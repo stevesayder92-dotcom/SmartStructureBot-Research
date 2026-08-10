@@ -101,6 +101,24 @@ def engine_recommendations(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
             "status": "WAITING_FOR_CONFIRMATION",
         },
         {
+            "engine": "M1PermissionPolicyEngine",
+            "recommendation": (
+                "EARLY_PERMISSION_EARNED"
+                if m1.get("early_permission_state") == "EARNED"
+                else "OBSERVE_M1"
+                if m1.get("parent_state_at_decision") == "PARENT_ARMED"
+                else "NORMAL_ACTIVE_PERMISSION"
+                if m1.get("parent_state_at_decision") == "PARENT_ACTIVE"
+                else "WAIT_PARENT"
+            ),
+            "priority": 89,
+            "confidence": None,
+            "proposed_action": (m1.get("permission") or {}).get("state"),
+            "structural_owner": m1.get("parent_m5_setup_id"),
+            "reason": str(m1.get("permission_policy") or "COUNTER_CONFIRMED_ACTIVE"),
+            "status": "WAITING_FOR_CONFIRMATION",
+        },
+        {
             "engine": "M1ChildStructureEngine",
             "recommendation": "ENTER_M1" if m1.get("entry_ready") else "WAIT_M1_PROOF",
             "priority": 90,

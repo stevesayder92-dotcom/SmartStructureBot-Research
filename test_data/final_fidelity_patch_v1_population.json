@@ -1,0 +1,246 @@
+{
+  "rows": [
+    {
+      "entry_time": 1784759820.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_1815"
+    },
+    {
+      "entry_time": 1784783340.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_1809"
+    },
+    {
+      "entry_time": 1784784840.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_1817"
+    },
+    {
+      "entry_time": 1784787120.0,
+      "parent_m5_setup_id": "USDJPY#|M5|EXPERT_SPEC_V1|BEARISH|PB_1817"
+    },
+    {
+      "entry_time": 1784787780.0,
+      "parent_m5_setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_1920"
+    },
+    {
+      "entry_time": 1784789100.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_1879"
+    },
+    {
+      "entry_time": 1784790600.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_1834"
+    },
+    {
+      "entry_time": 1784806800.0,
+      "parent_m5_setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_1991"
+    },
+    {
+      "entry_time": 1784811000.0,
+      "parent_m5_setup_id": "USDJPY#|M5|EXPERT_SPEC_V1|BULLISH|PB_1901"
+    },
+    {
+      "entry_time": 1784827920.0,
+      "parent_m5_setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_2066"
+    },
+    {
+      "entry_time": 1784828040.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_2031"
+    },
+    {
+      "entry_time": 1784830200.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2038"
+    },
+    {
+      "entry_time": 1784834340.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_1969"
+    },
+    {
+      "entry_time": 1784837100.0,
+      "parent_m5_setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_2091"
+    },
+    {
+      "entry_time": 1784837160.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_2055"
+    },
+    {
+      "entry_time": 1784846040.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2085"
+    },
+    {
+      "entry_time": 1784857620.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_2115"
+    },
+    {
+      "entry_time": 1784858700.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2049"
+    },
+    {
+      "entry_time": 1784860560.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2051"
+    },
+    {
+      "entry_time": 1784865300.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BEARISH|PB_2148"
+    },
+    {
+      "entry_time": 1784878380.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2121"
+    },
+    {
+      "entry_time": 1784878860.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2180"
+    },
+    {
+      "entry_time": 1784892420.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2236"
+    },
+    {
+      "entry_time": 1784892480.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2175"
+    },
+    {
+      "entry_time": 1784892600.0,
+      "parent_m5_setup_id": "USDJPY#|M5|EXPERT_SPEC_V1|BEARISH|PB_2171"
+    },
+    {
+      "entry_time": 1784893080.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_2234"
+    },
+    {
+      "entry_time": 1784897940.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2175"
+    },
+    {
+      "entry_time": 1784915400.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2313"
+    },
+    {
+      "entry_time": 1784924700.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2329"
+    },
+    {
+      "entry_time": 1784925060.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2268"
+    },
+    {
+      "entry_time": 1784926260.0,
+      "parent_m5_setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_2365"
+    },
+    {
+      "entry_time": 1784934000.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2308"
+    },
+    {
+      "entry_time": 1785119160.0,
+      "parent_m5_setup_id": "US100Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_2397"
+    },
+    {
+      "entry_time": 1785119640.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2349"
+    },
+    {
+      "entry_time": 1785119760.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2397"
+    },
+    {
+      "entry_time": 1785125460.0,
+      "parent_m5_setup_id": "USDJPY#|M5|EXPERT_SPEC_V1|BEARISH|PB_2379"
+    },
+    {
+      "entry_time": 1785127680.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2379"
+    },
+    {
+      "entry_time": 1785135180.0,
+      "parent_m5_setup_id": "USDJPY#|M5|EXPERT_SPEC_V1|BEARISH|PB_2397"
+    },
+    {
+      "entry_time": 1785139920.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2379"
+    },
+    {
+      "entry_time": 1785151440.0,
+      "parent_m5_setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_2521"
+    },
+    {
+      "entry_time": 1785171240.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2525"
+    },
+    {
+      "entry_time": 1785181620.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2552"
+    },
+    {
+      "entry_time": 1785192420.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2583"
+    },
+    {
+      "entry_time": 1785195240.0,
+      "parent_m5_setup_id": "USDJPY#|M5|EXPERT_SPEC_V1|BULLISH|PB_2600"
+    },
+    {
+      "entry_time": 1785205200.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2678"
+    },
+    {
+      "entry_time": 1785215400.0,
+      "parent_m5_setup_id": "EURUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2673"
+    },
+    {
+      "entry_time": 1785224640.0,
+      "parent_m5_setup_id": "GER40Cash#|M5|EXPERT_SPEC_V1|BULLISH|PB_2755"
+    },
+    {
+      "entry_time": 1785241860.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2759"
+    },
+    {
+      "entry_time": 1785250140.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2784"
+    },
+    {
+      "entry_time": 1785273420.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_2853"
+    },
+    {
+      "entry_time": 1785289140.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2914"
+    },
+    {
+      "entry_time": 1785303960.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_2967"
+    },
+    {
+      "entry_time": 1785321900.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BEARISH|PB_3032"
+    },
+    {
+      "entry_time": 1785351480.0,
+      "parent_m5_setup_id": "USDJPY#|M5|EXPERT_SPEC_V1|BULLISH|PB_3129"
+    },
+    {
+      "entry_time": 1785368700.0,
+      "parent_m5_setup_id": "GBPUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_3180"
+    },
+    {
+      "entry_time": 1785391200.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BEARISH|PB_3213"
+    },
+    {
+      "entry_time": 1785429600.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BULLISH|PB_3378"
+    },
+    {
+      "entry_time": 1785438300.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BULLISH|PB_3417"
+    },
+    {
+      "entry_time": 1785450000.0,
+      "parent_m5_setup_id": "GOLD#|M5|EXPERT_SPEC_V1|BULLISH|PB_3445"
+    },
+    {
+      "entry_time": 1785452700.0,
+      "parent_m5_setup_id": "AUDUSD#|M5|EXPERT_SPEC_V1|BULLISH|PB_3455"
+    }
+  ],
+  "source_sha256": "ce23b1c20d14ebab2ac7d5ca9fbdf7e143dc134adb6c1a3d907bfbf2abe5f7b5",
+  "version": "FINAL_FIDELITY_PATCH_V1_FROZEN_POPULATION_COMPACT"
+}

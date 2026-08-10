@@ -19,6 +19,7 @@ class SimulatorConfig:
     engine_sensitivity: int = 3
     htf_policy: str = "STRICT_2_OF_3_H1_M30_M15"
     allow_single_strong_htf: bool = False
+    m1_permission_policy: str = "COUNTER_CONFIRMED_ACTIVE"
     max_visible_m1: int = 240
     max_visible_m5: int = 120
     mode: str = "TRADER"
