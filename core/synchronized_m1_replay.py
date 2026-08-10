@@ -19,6 +19,11 @@ from core.fidelity_patch import (
     M1EntryQualityEngine,
 )
 from core.sequence_recovery import final_invalidation_structure
+from core.second_touch_structure import (
+    SecondTouchConfig,
+    evaluate_second_touch_structure,
+    second_touch_logical_boundary,
+)
 
 
 M1_MONITORING_STATES = {
@@ -213,17 +218,45 @@ def build_parent_contract(
             fibonacci.get("hundred_anchor_price"),
         )
     )
-    logical_index = int(logical["index"])
-    selected_invalidation = final_invalidation_structure(
-        data=m5_data,
-        direction=direction,
-        entry_index=entry_index,
-        setup_start_index=int(anchor["index"]),
-        timeframe="M5",
-    )
-    logical_index = int(selected_invalidation["structure_index"])
-    body_edge = _number(selected_invalidation["structure_body_edge"])
     m5_atr = atr_at(m5_data, as_of_index=entry_index)
+    logical_index = int(logical["index"])
+    if candidate.get("second_touch_entry"):
+        boundary_contract = second_touch_logical_boundary(
+            wick_extreme=_number(logical.get("price", logical.get("level"))),
+            direction=direction,
+            timeframe="M5",
+            causal_atr=m5_atr,
+        )
+        structure_wick = boundary_contract["structure_wick"]
+        tolerance = boundary_contract["atr_tolerance"]
+        boundary = boundary_contract["logical_invalidation_boundary"]
+        selected_invalidation = {
+            "owner": "FinalInvalidationStructureSelector",
+            "state": "SECOND_TOUCH_WICK_INVALIDATION_STRUCTURE_SELECTED",
+            "direction": direction,
+            "timeframe": "M5",
+            "side": "LOW" if direction == "BULLISH" else "HIGH",
+            "structure_index": logical_index,
+            "structure_time": _time(m5_data.iloc[logical_index]["time"]),
+            "confirmed_at_index": int(logical.get("confirmed_at_index", logical_index)),
+            "available_at_entry": int(logical.get("confirmed_at_index", logical_index)) <= entry_index,
+            "structure_wick": structure_wick,
+            "structure_body_edge": structure_wick,
+            "logical_invalidation_boundary": boundary,
+            "atr_tolerance": tolerance,
+            "selection_method": "SECOND_TOUCH_WICK_EXTREME_WITH_M5_ATR_TOLERANCE",
+            "causal_valid": int(logical.get("confirmed_at_index", logical_index)) <= entry_index,
+        }
+    else:
+        selected_invalidation = final_invalidation_structure(
+            data=m5_data,
+            direction=direction,
+            entry_index=entry_index,
+            setup_start_index=int(anchor["index"]),
+            timeframe="M5",
+        )
+        logical_index = int(selected_invalidation["structure_index"])
+    body_edge = _number(selected_invalidation["structure_body_edge"])
     m5_stop = _number(
         selected_invalidation["logical_invalidation_boundary"]
     )
@@ -708,6 +741,8 @@ def _find_m1_child_entry_single(
     decision_time: Optional[float] = None,
     trigger_available_filter: Optional[int] = None,
     permission_policy: str = COUNTER_CONFIRMED_ACTIVE,
+    second_touch_enabled: bool = False,
+    second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Dict[str, Any]:
     """
     Find the first causal M1 entry inside one active M5 parent window.
@@ -753,6 +788,7 @@ def _find_m1_child_entry_single(
         "future_data_used": False,
         "research_only": True,
         "order_api_called": False,
+        "second_touch_enabled": bool(second_touch_enabled),
     }
     if permission_policy == EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE:
         permission = evaluate_m1_permission(
@@ -822,6 +858,22 @@ def _find_m1_child_entry_single(
         point["global_confirmed_at_index"] = (
             window_start + int(point["confirmed_at_index"])
         )
+    second_touch_swings = [
+        {
+            **point,
+            "swing_index": int(point["global_index"]),
+            "available_at_index": int(point["global_confirmed_at_index"]),
+        }
+        for point in swings
+    ]
+    second_touch_owner = {
+        "parent_setup_id": parent.get("parent_m5_setup_id"),
+        "retracement_id": parent.get("parent_m5_retracement_id"),
+        "impulse_cycle_id": parent.get("parent_impulse_cycle_id"),
+        "direction": direction,
+        "dominant_protection_identity": parent.get("parent_protected_structure_id"),
+        "fib_anchor_version": parent.get("parent_fib_anchor_version"),
+    }
 
     trigger_side = "HIGH" if direction == "BULLISH" else "LOW"
     counter_side = "LOW" if direction == "BULLISH" else "HIGH"
@@ -940,6 +992,47 @@ def _find_m1_child_entry_single(
         rejections.extend(wick_rejections)
         if entry_index is None:
             continue
+        second_touch = evaluate_second_touch_structure(
+            data=m1_data,
+            swings=second_touch_swings,
+            direction=direction,
+            as_of_index=entry_index,
+            setup_start_index=max(0, armed_global - sensitivity),
+            owner=second_touch_owner,
+            expected_owner=second_touch_owner,
+            protection_intact=parent.get("dominant_protection_intact") is not False,
+            setup_consumed=bool(parent.get("entry_opportunity_consumed")),
+            config=second_touch_config,
+        )
+        second_touch_active = bool(
+            second_touch_enabled
+            and second_touch.get("state") == "SECOND_TOUCH_CONFIRMED"
+        )
+        if second_touch_enabled and second_touch.get("state") == "SECOND_TOUCH_CANDIDATE":
+            rejections.append(
+                {
+                    "state": "M1_OLD_TRIGGER_SUPERSEDED_WAITING_SECOND_TOUCH_TRIGGER",
+                    "m1_index": entry_index,
+                    "trigger_swing_index": trigger_index,
+                    "second_touch": second_touch,
+                    "hard_blockers": ["TRIGGER_SUPERSEDED_BY_SECOND_TOUCH"],
+                }
+            )
+            continue
+        if second_touch_active:
+            owned_trigger = second_touch.get("active_trigger") or {}
+            if int(owned_trigger.get("swing_index", -1)) != trigger_index:
+                rejections.append(
+                    {
+                        "state": "M1_OLD_TRIGGER_SUPERSEDED_BY_SECOND_TOUCH",
+                        "m1_index": entry_index,
+                        "trigger_swing_index": trigger_index,
+                        "active_second_touch_trigger_index": owned_trigger.get("swing_index"),
+                        "second_touch": second_touch,
+                        "hard_blockers": ["TRIGGER_SUPERSEDED_BY_SECOND_TOUCH"],
+                    }
+                )
+                continue
         if entry_index < permission_start_global:
             rejections.append(
                 {
@@ -1016,8 +1109,13 @@ def _find_m1_child_entry_single(
             if stop_points
             else counter
         )
-        stop_index = int(stop_owner["global_index"])
-        logical_stop = _body_edge(m1_data, stop_index, direction)
+        if second_touch_active:
+            touch_2 = second_touch["touch_2"]
+            stop_index = int(touch_2["swing_index"])
+            logical_stop = _number(touch_2["price"])
+        else:
+            stop_index = int(stop_owner["global_index"])
+            logical_stop = _body_edge(m1_data, stop_index, direction)
         correct_stop_side = (
             logical_stop < entry_price
             if direction == "BULLISH"
@@ -1118,7 +1216,11 @@ def _find_m1_child_entry_single(
             "bos_body_atr": bos_body_atr,
             "logical_stop_owner_index": stop_index,
             "logical_stop_owner_side": counter_side,
-            "logical_stop_terminology": M1_STOP_TERMINOLOGY,
+            "logical_stop_terminology": (
+                "SECOND_TOUCH_WICK_EXTREME"
+                if second_touch_active
+                else M1_STOP_TERMINOLOGY
+            ),
             "logical_stop": logical_stop,
             "stop_distance_m1": abs(entry_price - logical_stop),
             "emergency_stop": emergency,
@@ -1153,6 +1255,11 @@ def _find_m1_child_entry_single(
             "future_data_used": False,
             "closed_candles_only": True,
             "order_api_called": False,
+            "second_touch": second_touch,
+            "second_touch_entry": second_touch_active,
+            "second_touch_trigger_owner": (
+                second_touch.get("active_trigger") if second_touch_active else None
+            ),
         }
         if permission_policy == EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE:
             permission_at_entry = evaluate_m1_permission(
@@ -1224,6 +1331,8 @@ def find_m1_child_entry(
     decision_time: Optional[float] = None,
     trigger_available_filter: Optional[int] = None,
     permission_policy: str = COUNTER_CONFIRMED_ACTIVE,
+    second_touch_enabled: bool = False,
+    second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Dict[str, Any]:
     """Resolve an earned pre-ACTIVE entry without changing ACTIVE-era baseline."""
     arguments = {
@@ -1235,6 +1344,8 @@ def find_m1_child_entry(
         "quality_config": quality_config,
         "decision_time": decision_time,
         "permission_policy": permission_policy,
+        "second_touch_enabled": second_touch_enabled,
+        "second_touch_config": second_touch_config,
     }
     if (
         permission_policy != EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE

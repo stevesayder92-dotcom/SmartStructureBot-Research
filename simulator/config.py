@@ -20,6 +20,10 @@ class SimulatorConfig:
     htf_policy: str = "STRICT_2_OF_3_H1_M30_M15"
     allow_single_strong_htf: bool = False
     m1_permission_policy: str = "COUNTER_CONFIRMED_ACTIVE"
+    second_touch_enabled: bool = False
+    second_touch_proximity_atr_ratio: float = 0.25
+    second_touch_meaningful_reaction_atr_ratio: float = 0.35
+    second_touch_minimum_separation_bars: int = 3
     max_visible_m1: int = 240
     max_visible_m5: int = 120
     mode: str = "TRADER"

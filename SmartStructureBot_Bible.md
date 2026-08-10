@@ -2656,3 +2656,175 @@ Director action. Retrospective comparisons are post-hoc only.
 - `test_shadow_diagnostics_cannot_mutate_director_action`
 - `test_no_duplicate_first_entry_after_early_m1`
 - `test_no_live_demo_order_api_enabled_or_called`
+
+## Phase S2B.1 — second-touch structural trigger fidelity
+
+Change record: `S2B1_SECOND_TOUCH_TRIGGER_FIDELITY`.
+
+This strategy-fidelity rule preserves S2A.1 causality and leaves the canonical
+permission default `COUNTER_CONFIRMED_ACTIVE`. A double top or double bottom is
+optional structural evolution inside one existing parent retracement. A normal
+single-reaction setup remains legal when no meaningful second touch exists.
+
+### Canonical terminology and ownership
+
+- `SECOND_TOUCH_CANDIDATE`: two same-side wick extremes are causally visible
+  inside one parent, separated by an opposing meaningful reaction, but the
+  second-touch-owned trigger is not yet available.
+- `SECOND_TOUCH_CONFIRMED`: touch 2 and its subsequent meaningful reaction
+  trigger are both confirmed using closed candles and right-side swing delay.
+- `SECOND_TOUCH_TRIGGER_OWNER`: the meaningful reaction structure after touch
+  2 that alone may own the next BOS decision.
+- `TRIGGER_SUPERSEDED_BY_SECOND_TOUCH`: the first-touch trigger is retained in
+  history but loses execution authority at the causal second-touch migration
+  time.
+- `ACTIVE_SECOND_TOUCH_TRIGGER`: the confirmed touch-2-owned trigger currently
+  eligible for a correctly directed body-close BOS.
+
+A touch uses candle wick extremes: HIGH for a bearish double top and LOW for a
+bullish double bottom. Candle bodies need not be equal and exact floating-point
+equality is forbidden. S2B.1 explicitly reuses the established structure
+hierarchy proximity scale of `0.25 * causal ATR`, now published as the research
+parameter `second_touch_proximity_atr_ratio = 0.25`. The separating reaction
+must satisfy the existing meaningful-structure displacement of at least
+`0.35 * causal ATR`; confirmed swings and a minimum three-candle separation
+prevent adjacent noise. These values are fixed before outcome replay and may
+not be tuned from S2B.1 results.
+
+Second-touch ownership requires the exact same `parent_setup_id`,
+`retracement_id`, `impulse_cycle_id`, direction, dominant-protection identity
+and Fib-anchor version. Timestamp proximity alone is never ownership. Foreign,
+consumed, post-protection-failure, too-distant and micro/noise structures are
+rejected with explicit states.
+
+### Trigger migration decision tree
+
+```text
+normal owned reaction trigger A
+  -> no meaningful touch 2 before entry
+       -> preserve trigger A, body-close BOS, existing stop contract
+  -> same-parent touch 2 becomes causally confirmed before entry
+       -> retain A in history
+       -> A = TRIGGER_SUPERSEDED_BY_SECOND_TOUCH
+       -> wait for meaningful reaction structure after touch 2
+       -> publish trigger B = ACTIVE_SECOND_TOUCH_TRIGGER
+       -> only correctly directed BODY CLOSE beyond B may enter
+       -> entry price is that BOS candle close
+```
+
+For bearish parents, touch 1/touch 2 are wick highs and trigger B is the
+meaningful reaction LOW after touch 2. For bullish parents, touch 1/touch 2 are
+wick lows and trigger B is the meaningful reaction HIGH after touch 2. This is
+not a generic neckline rule and never selects an arbitrary nearest candle.
+
+If Attempt 1 legally entered before touch 2 existed, later structure cannot
+rewrite or erase it. After a causal Attempt-1 failure, a same-parent second
+touch may become fresh Attempt-2 evidence only with a fresh identity, trigger,
+body-close BOS, stop owner, emergency stop and management state. Attempt-1
+trigger/stop reuse is forbidden. The maximum remains one re-entry; no third
+attempt can be created.
+
+### Second-touch stop and invalidation contract
+
+The general relevant-swing body-edge stop remains unchanged for normal entries.
+Only accepted second-touch entries use this exception:
+
+- bearish: logical structural owner is touch-2 HIGH wick extreme;
+- bullish: logical structural owner is touch-2 LOW wick extreme;
+- M1: wick through the logical level survives; a body close beyond it applies
+  the existing logical invalidation contract;
+- M5: the touch-2 wick extreme owns structure and the existing causal
+  ATR-tolerant body-close invalidation remains unchanged;
+- emergency protection remains separate and wider.
+
+Wicks may establish touches. Wicks may never establish BOS. M1 and M5 use one
+shared semantic recognizer with timeframe-specific stop/invalidation handling.
+
+### S2B.1 policy variants
+
+- `CANONICAL_CONTROL`: ACTIVE-only permission, existing trigger behavior.
+- `SECOND_TOUCH_CANONICAL`: ACTIVE-only permission, second-touch migration.
+- `SECOND_TOUCH_EARNED_EARLY`: earned-early research permission plus
+  second-touch migration.
+
+S2B remains research rejected unless fixed paired evidence proves otherwise.
+No S2B.1 result may automatically promote either research policy.
+
+### Phase S2B.1 causality and test expectations
+
+At decision timestamp T, prefix-only, actual-suffix, modified-suffix and future
+reversal runs must publish identical touch identity/extreme, supersession,
+active trigger, BOS, readiness, entry time/price, logical stop, attempt owner
+and Director decision. A touch that forms after an entry cannot change that
+historical decision.
+
+Permanent tests cover wick-defined tops/bottoms, wick-only BOS rejection,
+body-close BOS, same-parent ownership, noise/foreign rejection, pre-entry
+supersession, old-trigger blocking, touch-2 trigger and wick-stop ownership,
+M1/M5 symmetry, M5 causal tolerance, post-entry immutability, fresh Attempt 2,
+no trigger reuse, one-reentry/one-first-entry limits, S2A.1 preservation,
+baseline-off reproduction, research-data hashes, absence of order APIs and the
+complete suffix matrix.
+
+The canonical shared implementation module is `second_touch_structure`.
+Its published terminal/rejection vocabulary is `NO_SECOND_TOUCH`,
+`SECOND_TOUCH_CANDIDATE`, `SECOND_TOUCH_CONFIRMED`,
+`SECOND_TOUCH_REJECTED_NOISE`, `SECOND_TOUCH_FOREIGN_PARENT`,
+`SECOND_TOUCH_AFTER_CONSUMPTION`, `SECOND_TOUCH_PROTECTION_FAILED`,
+`SECOND_TOUCH_TOO_DISTANT`, `FIRST_TRIGGER_SUPERSEDED`, and
+`WAITING_SECOND_TOUCH_BOS`. A candidate carries the explicit reason
+`SECOND_TOUCH_TRIGGER_NOT_AVAILABLE`; no such rejection is collapsed into a
+generic no-action result.
+
+Its permanent S2B.1 test expectations are:
+
+- `test_bearish_double_top_uses_wick_extremes`
+- `test_bullish_double_bottom_uses_wick_extremes`
+- `test_touch_two_is_absent_before_confirmation_delay`
+- `test_touch_two_candidate_exists_before_new_trigger_confirmation`
+- `test_second_touch_trigger_is_reaction_after_touch_two`
+- `test_old_trigger_is_explicitly_superseded`
+- `test_second_touch_logical_stop_owner_is_touch_two`
+- `test_exact_price_equality_is_not_required`
+- `test_touch_distance_beyond_atr_tolerance_is_rejected`
+- `test_adjacent_touch_noise_is_rejected`
+- `test_missing_separating_reaction_is_rejected`
+- `test_micro_separating_reaction_is_rejected`
+- `test_foreign_parent_ownership_is_rejected`
+- `test_timestamp_proximity_cannot_replace_owner_identity`
+- `test_complete_owner_fingerprint_is_stable`
+- `test_consumed_setup_rejects_second_touch`
+- `test_failed_dominant_protection_rejects_second_touch`
+- `test_setup_start_excludes_old_foreign_structure`
+- `test_wick_only_bos_is_rejected`
+- `test_body_close_bos_is_accepted`
+- `test_wrong_direction_body_close_is_rejected`
+- `test_bullish_body_close_symmetry`
+- `test_m1_m5_recognition_semantics_are_identical`
+- `test_future_suffix_cannot_change_frozen_touch_identity`
+- `test_future_suffix_cannot_change_frozen_trigger`
+- `test_post_entry_touch_cannot_rewrite_earlier_no_touch_decision`
+- `test_fresh_attempt_two_can_be_recognized_after_new_start`
+- `test_attempt_one_structure_cannot_be_reused_after_failure_start`
+- `test_default_feature_flag_is_off`
+- `test_default_m1_permission_policy_is_unchanged`
+- `test_config_file_keeps_second_touch_research_disabled`
+- `test_published_fixed_parameters_match_bible`
+- `test_invalid_proximity_configuration_is_rejected`
+- `test_invalid_reaction_configuration_is_rejected`
+- `test_invalid_separation_configuration_is_rejected`
+- `test_research_data_hashes_still_match_frozen_manifest`
+- `test_no_order_api_added_to_s2b1_source`
+- `test_tp1_clarification_is_documentation_only`
+- `test_m1_second_touch_boundary_is_exact_touch_wick`
+- `test_m5_second_touch_boundary_retains_causal_atr_tolerance`
+
+## Pending S2B.2 management clarification — documentation only
+
+Do not implement during S2B.1. After TP1, realize 50% and retain 50% as runner.
+Candidate protection is halfway between entry and TP1. If that level would sit
+inside a structurally normal retracement/retest zone and choke a healthy runner,
+use a small positive, cost-covered break-even protection instead. Existing
+tighter proven protection always wins. Protection may tighten or hold, never
+loosen. TP1, management and outcome code remain unchanged until S2B.2 is
+explicitly authorized.

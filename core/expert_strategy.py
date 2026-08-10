@@ -17,6 +17,10 @@ from core.steve_trade_management import (
 )
 from core.setup_lifecycle import PipelineRuntimeState
 from core.system_director import DataContractError, SystemStateDirector
+from core.second_touch_structure import (
+    SecondTouchConfig,
+    evaluate_second_touch_structure,
+)
 
 
 EXPERT_STRATEGY_MODEL = "EXPERT_SPEC_V1"
@@ -554,6 +558,8 @@ def _simulate_retracements(
     timeframe: Any,
     sensitivity: int,
     fibonacci_config: Optional[FibonacciConfig] = None,
+    second_touch_enabled: bool = False,
+    second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Dict[str, Any]:
     """Run the exact M5 pullback/trigger state machine over visible candles."""
     fibonacci_config = fibonacci_config or FibonacciConfig()
@@ -576,6 +582,8 @@ def _simulate_retracements(
     last_terminal: Optional[Dict[str, Any]] = None
     terminal_entries: list[Dict[str, Any]] = []
     history: list[Dict[str, Any]] = []
+    published_second_touch_state: Optional[str] = None
+    current_second_touch: Optional[Dict[str, Any]] = None
 
     def better_anchor(point: Dict[str, Any]) -> bool:
         if anchor is None:
@@ -709,6 +717,72 @@ def _simulate_retracements(
         if anchor is None or trigger is None:
             continue
 
+        setup_id = (
+            f"{symbol}|{timeframe}|{EXPERT_STRATEGY_MODEL}|"
+            f"{direction}|PB_{anchor['index']}"
+        )
+        second_touch_owner = {
+            "parent_setup_id": setup_id,
+            "retracement_id": f"{setup_id}|RETRACEMENT|{anchor['index']}",
+            "impulse_cycle_id": f"{setup_id}|IMPULSE_CYCLE",
+            "direction": direction,
+            "dominant_protection_identity": f"{setup_id}|DOMINANT_PROTECTION",
+            "fib_anchor_version": getattr(fibonacci_config, "anchor_version", "FIBONACCI_CONTRACT_V1"),
+        }
+        if current_second_touch is None or by_confirmation.get(candle_index):
+            current_second_touch = evaluate_second_touch_structure(
+                data=data,
+                swings=swings,
+                direction=direction,
+                as_of_index=candle_index,
+                setup_start_index=int(anchor["index"]),
+                owner=second_touch_owner,
+                expected_owner=second_touch_owner,
+                config=second_touch_config,
+            )
+        second_touch = current_second_touch
+        if second_touch_enabled and second_touch["state"] != published_second_touch_state:
+            history.append(
+                {
+                    "event": second_touch["state"],
+                    "as_of_index": candle_index,
+                    "second_touch": second_touch,
+                }
+            )
+            published_second_touch_state = second_touch["state"]
+        if second_touch_enabled and second_touch["state"] == "SECOND_TOUCH_CANDIDATE":
+            continue
+        second_touch_active = bool(
+            second_touch_enabled
+            and second_touch["state"] == "SECOND_TOUCH_CONFIRMED"
+        )
+        if second_touch_active:
+            active_trigger = second_touch.get("active_trigger") or {}
+            active_index = int(active_trigger.get("swing_index", -1))
+            if active_index != int(trigger["index"]):
+                replacement = next(
+                    (
+                        point
+                        for point in swings
+                        if int(point["index"]) == active_index
+                        and int(point["confirmed_at_index"]) <= candle_index
+                    ),
+                    None,
+                )
+                if replacement is None:
+                    continue
+                trigger = replacement
+                qualified_at = int(replacement["confirmed_at_index"])
+                trigger_updates += 1
+                history.append(
+                    {
+                        "event": "ACTIVE_SECOND_TOUCH_TRIGGER",
+                        "as_of_index": candle_index,
+                        "swing_index": trigger["index"],
+                        "swing_level": trigger["level"],
+                    }
+                )
+
         row = data.iloc[candle_index]
         close = _number(row["close"])
         open_price = _number(row["open"])
@@ -788,6 +862,8 @@ def _simulate_retracements(
             qualified_at = None
             trigger_updates = 0
             history = []
+            current_second_touch = None
+            published_second_touch_state = None
             continue
 
         start = int(anchor["index"])
@@ -797,19 +873,28 @@ def _simulate_retracements(
             if bearish
             else float(stop_slice["low"].astype(float).min())
         )
-        setup_id = (
-            f"{symbol}|{timeframe}|{EXPERT_STRATEGY_MODEL}|"
-            f"{direction}|PB_{anchor['index']}"
-        )
-        logical_stop_structure = select_last_important_pre_bos_swing(
-            swings=swings,
-            direction=direction,
-            trigger_index=int(trigger["index"]),
-            entry_index=candle_index,
-            data=data,
-            setup_start_index=int(anchor["index"]),
-            fallback=counter,
-        )
+        if second_touch_active:
+            touch_2 = second_touch["touch_2"]
+            logical_stop_structure = {
+                "owner": "SecondTouchStructureEngine",
+                "selection_method": "SECOND_TOUCH_WICK_EXTREME",
+                "side": counter_side,
+                "index": int(touch_2["swing_index"]),
+                "confirmed_at_index": int(touch_2["available_at_index"]),
+                "level": _number(touch_2["price"]),
+                "price": _number(touch_2["price"]),
+                "causal_valid": int(touch_2["available_at_index"]) <= candle_index,
+            }
+        else:
+            logical_stop_structure = select_last_important_pre_bos_swing(
+                swings=swings,
+                direction=direction,
+                trigger_index=int(trigger["index"]),
+                entry_index=candle_index,
+                data=data,
+                setup_start_index=int(anchor["index"]),
+                fallback=counter,
+            )
         history.append(
             {
                 "event": "CLOSE_BOS_ENTRY_AND_SETUP_CONSUMED",
@@ -840,6 +925,8 @@ def _simulate_retracements(
             "history": list(history),
             "status": "CONSUMED",
             "origin_bos": local_origin_bos,
+            "second_touch": second_touch,
+            "second_touch_entry": second_touch_active,
         }
         last_terminal["fibonacci"] = entry_fibonacci
         terminal_entries.append(dict(last_terminal))
@@ -850,6 +937,8 @@ def _simulate_retracements(
         qualified_at = None
         trigger_updates = 0
         history = []
+        current_second_touch = None
+        published_second_touch_state = None
 
     current_index = len(data) - 1
     if anchor is None:
@@ -931,6 +1020,8 @@ def scan_expert_m5_candidates(
     timeframe: Any = "M5",
     sensitivity: int = DEFAULT_ENGINE_SENSITIVITY,
     fibonacci_config: Optional[FibonacciConfig] = None,
+    second_touch_enabled: bool = False,
+    second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> list[Dict[str, Any]]:
     """Efficiently enumerate causal M5 candidates for offline review."""
     normalized_direction = str(direction).upper()
@@ -949,6 +1040,8 @@ def scan_expert_m5_candidates(
         timeframe=timeframe,
         sensitivity=sensitivity,
         fibonacci_config=fibonacci_config,
+        second_touch_enabled=second_touch_enabled,
+        second_touch_config=second_touch_config,
     )
     return [
         dict(entry)

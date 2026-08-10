@@ -191,7 +191,7 @@ def _funnel_state(value: str) -> str:
     return mapping.get(value, "OTHER")
 
 
-def _symbol_job(symbol_dir: str) -> dict[str, Any]:
+def _symbol_job(symbol_dir: str, second_touch_enabled: bool = False) -> dict[str, Any]:
     base = ROOT / "simulator_data" / "library" / symbol_dir
     manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
     symbol = str(manifest["symbol"])
@@ -200,7 +200,7 @@ def _symbol_job(symbol_dir: str) -> dict[str, Any]:
     config = load_config()
     candidates: list[dict[str, Any]] = []
     for direction in ("BULLISH", "BEARISH"):
-        candidates.extend(scan_expert_m5_candidates(m5, direction=direction, symbol=symbol, timeframe="M5", sensitivity=config.engine_sensitivity))
+        candidates.extend(scan_expert_m5_candidates(m5, direction=direction, symbol=symbol, timeframe="M5", sensitivity=config.engine_sensitivity, second_touch_enabled=second_touch_enabled))
     candidates.sort(key=lambda row: (int(row["entry_index"]), str(row["direction"])))
     unique: list[dict[str, Any]] = []
     seen: set[str] = set()
@@ -228,8 +228,8 @@ def _symbol_job(symbol_dir: str) -> dict[str, Any]:
         except (KeyError, ValueError, IndexError):
             continue
         visible_m1 = m1[m1["time"].astype(float) + 60.0 <= terminal_time].reset_index(drop=True)
-        baseline_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=COUNTER_CONFIRMED_ACTIVE)
-        variant_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE)
+        baseline_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=COUNTER_CONFIRMED_ACTIVE, second_touch_enabled=second_touch_enabled)
+        variant_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE, second_touch_enabled=second_touch_enabled)
         baseline = arbitrate_first_valid_entry(parent=parent, m1_result=baseline_report, decision_time=terminal_time)
         variant = arbitrate_first_valid_entry(parent=parent, m1_result=variant_report, decision_time=terminal_time)
         b_entry = dict(baseline.get("entry") or {})
@@ -244,6 +244,16 @@ def _symbol_job(symbol_dir: str) -> dict[str, Any]:
         b_stop = float(b_entry["logical_stop"]); s_stop = float(s_entry["logical_stop"])
         b_distance = abs(b_price - b_stop); s_distance = abs(s_price - s_stop)
         b_time = float(b_entry["entry_time"]); s_time = float(s_entry["entry_time"])
+        b_second_touch = deepcopy(
+            b_entry.get("second_touch")
+            or (candidate.get("second_touch") if baseline.get("entry_owner") == "M5" else None)
+            or {}
+        )
+        s_second_touch = deepcopy(
+            s_entry.get("second_touch")
+            or (candidate.get("second_touch") if variant.get("entry_owner") == "M5" else None)
+            or {}
+        )
         same_parent = str(b_entry.get("parent_m5_setup_id", b_entry.get("parent_setup_id", candidate["setup_id"]))) == str(candidate["setup_id"])
         early_earned = bool(s_entry.get("early_permission_earned"))
         row = {
@@ -259,6 +269,11 @@ def _symbol_job(symbol_dir: str) -> dict[str, Any]:
             "fib_zero_index": parent["fib_zero_index"], "fib_zero_price": parent["fib_zero_price"], "fib_hundred_index": parent["fib_hundred_index"], "fib_hundred_price": parent["fib_hundred_price"], "fibonacci_zone": parent["fibonacci_zone"],
             "s2b_counter_index": s_entry.get("counter_structure_index"), "s2b_counter_price": s_entry.get("counter_structure_price"), "s2b_trigger_index": s_entry.get("failure_trigger_index"), "s2b_trigger_available_index": s_entry.get("failure_trigger_available_at_index"), "s2b_trigger_price": s_entry.get("failure_trigger_price"), "s2b_entry_index": s_entry.get("entry_index"), "s2b_quality_score": s_entry.get("m1_quality_score"), "s2b_grade": s_entry.get("grade"),
             "review_end_time": _iso(review_end_time), "review_end_epoch": review_end_time, "baseline_management": b_out, "s2b_management": s_out, "causal_valid": bool(b_out["causal_valid"] and s_out["causal_valid"] and same_parent), "order_api_called": False,
+            "second_touch_enabled": second_touch_enabled,
+            "baseline_second_touch": b_second_touch,
+            "s2b_second_touch": s_second_touch,
+            "baseline_second_touch_entry": bool(b_entry.get("second_touch_entry") or (baseline.get("entry_owner") == "M5" and candidate.get("second_touch_entry"))),
+            "s2b_second_touch_entry": bool(s_entry.get("second_touch_entry") or (variant.get("entry_owner") == "M5" and candidate.get("second_touch_entry"))),
         }
         categories: list[str] = []
         if row["minutes_entry_difference"] > 0: categories += ["EARLY_BETTER", "EARLY_SAVED_LATE_ENTRY"]
@@ -275,7 +290,7 @@ def _symbol_job(symbol_dir: str) -> dict[str, Any]:
         shadow = evaluate_armed_to_active_shadow(parent=parent, m1_data=visible_m1, sensitivity=2)
         for event in shadow.get("events", []):
             funnel_events.append({"symbol": symbol, "setup_id": candidate["setup_id"], "direction": candidate["direction"], "state": _funnel_state(str(event["state"])), "raw_state": event["state"], "event_index": event.get("trigger_available_at_index"), "event_time": _iso(event.get("trigger_available_time")), "event_epoch": event.get("trigger_available_time"), "armed_time": _iso(parent["armed_time"]), "active_time": _iso(parent["active_time"]), "reason": [r.get("state") for r in event.get("rejections", [])], "order_api_called": False})
-    return {"symbol": symbol, "candidate_count": len(unique), "pairs": pairs, "funnel_events": funnel_events}
+    return {"symbol": symbol, "candidate_count": len(unique), "pairs": pairs, "funnel_events": funnel_events, "second_touch_enabled": second_touch_enabled}
 
 
 def _font(size: int, bold: bool = False) -> ImageFont.ImageFont:

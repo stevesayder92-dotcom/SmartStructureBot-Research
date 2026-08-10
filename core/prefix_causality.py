@@ -6,6 +6,11 @@ from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Sequence
 import pandas as pd
 
 from core.sequence_recovery import final_invalidation_structure
+from core.second_touch_structure import (
+    SecondTouchConfig,
+    evaluate_second_touch_structure,
+    second_touch_logical_boundary,
+)
 from core.steve_trade_management import atr_at
 
 
@@ -330,6 +335,8 @@ def evaluate_reentry_candidate_at(
     original_trigger_price: Optional[float],
     meaningful_reset_atr: float,
     freshness_candles: int,
+    second_touch_enabled: bool = False,
+    second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Optional[Dict[str, Any]]:
     timeframe = str(timeframe).upper()
     seconds = 60 if timeframe == "M1" else 300
@@ -356,6 +363,34 @@ def evaluate_reentry_candidate_at(
     )
     if not crossed:
         return None
+    second_touch_owner = {
+        "parent_setup_id": parent_setup_id,
+        "retracement_id": parent_retracement_id,
+        "impulse_cycle_id": parent_setup_id,
+        "direction": str(direction).upper(),
+        "dominant_protection_identity": parent_setup_id,
+        "fib_anchor_version": "PARENT_OWNED",
+    }
+    second_touch = evaluate_second_touch_structure(
+        data=data,
+        swings=visible,
+        direction=direction,
+        as_of_index=current,
+        setup_start_index=start,
+        owner=second_touch_owner,
+        expected_owner=second_touch_owner,
+        config=second_touch_config,
+    )
+    if second_touch_enabled and second_touch["state"] == "SECOND_TOUCH_CANDIDATE":
+        return None
+    second_touch_active = bool(
+        second_touch_enabled
+        and second_touch["state"] == "SECOND_TOUCH_CONFIRMED"
+    )
+    if second_touch_active:
+        active_trigger = second_touch.get("active_trigger") or {}
+        if int(active_trigger.get("swing_index", -1)) != int(trigger["swing_index"]):
+            return None
     counters = [event for event in visible if event["side"] == counter_side and start <= int(event["swing_index"]) < current]
     counter = max(counters, key=lambda event: int(event["swing_index"])) if counters else None
     atr = max(atr_at(data.iloc[: current + 1], as_of_index=current), 1e-12)
@@ -371,17 +406,38 @@ def evaluate_reentry_candidate_at(
         return None
     if extension_proven_at_time is not None and event_time < float(extension_proven_at_time):
         return None
-    try:
-        stop = final_invalidation_structure(
-            data=data.iloc[: current + 1],
+    if second_touch_active:
+        touch_2 = second_touch["touch_2"]
+        boundary = second_touch_logical_boundary(
+            wick_extreme=_f(touch_2["price"]),
             direction=direction,
-            entry_index=current,
-            setup_start_index=max(start - 2, 0),
             timeframe=timeframe,
+            causal_atr=atr,
         )
-    except ValueError:
-        return None
-    logical_stop = _f(stop["logical_invalidation_boundary"])
+        logical_stop = boundary["logical_invalidation_boundary"]
+        stop = {
+            "owner": "SecondTouchStructureEngine",
+            "state": "SECOND_TOUCH_WICK_INVALIDATION_STRUCTURE_SELECTED",
+            "structure_index": int(touch_2["swing_index"]),
+            "confirmed_at_index": int(touch_2["available_at_index"]),
+            "structure_wick": boundary["structure_wick"],
+            "atr_tolerance": boundary["atr_tolerance"],
+            "logical_invalidation_boundary": logical_stop,
+            "selection_method": "SECOND_TOUCH_WICK_EXTREME",
+            "causal_valid": int(touch_2["available_at_index"]) <= current,
+        }
+    else:
+        try:
+            stop = final_invalidation_structure(
+                data=data.iloc[: current + 1],
+                direction=direction,
+                entry_index=current,
+                setup_start_index=max(start - 2, 0),
+                timeframe=timeframe,
+            )
+        except ValueError:
+            return None
+        logical_stop = _f(stop["logical_invalidation_boundary"])
     if not (logical_stop < close if str(direction).upper() == "BULLISH" else logical_stop > close):
         return None
     return {
@@ -419,6 +475,9 @@ def evaluate_reentry_candidate_at(
         "prefix_rows_used": current + 1,
         "parent_extension_proven_at": extension_proven_at_time,
         "causal_valid": True,
+        "second_touch": second_touch,
+        "second_touch_entry": second_touch_active,
+        "fresh_second_touch_attempt_2": second_touch_active,
     }
 
 
@@ -442,6 +501,18 @@ class PrefixCausalReentryCoordinator:
     ) -> Dict[str, Any]:
         m1 = m1_data.reset_index(drop=True)
         m5 = m5_data.reset_index(drop=True)
+        second_touch_enabled = bool(getattr(self.config, "second_touch_enabled", False))
+        second_touch_config = SecondTouchConfig(
+            proximity_atr_ratio=float(
+                getattr(self.config, "second_touch_proximity_atr_ratio", 0.25)
+            ),
+            meaningful_reaction_atr_ratio=float(
+                getattr(self.config, "second_touch_meaningful_reaction_atr_ratio", 0.35)
+            ),
+            minimum_separation_bars=int(
+                getattr(self.config, "second_touch_minimum_separation_bars", 3)
+            ),
+        )
         machine = PrefixParentViabilityStateMachine(
             parent={**dict(parent), "first_attempt_trigger_index": original_trigger_index, "first_attempt_trigger_price": original_trigger_price},
             failure_time=failure_time,
@@ -486,6 +557,8 @@ class PrefixCausalReentryCoordinator:
                         require_child_reset=False, original_trigger_index=original_trigger_index,
                         original_trigger_price=original_trigger_price, meaningful_reset_atr=self.config.meaningful_reset_atr,
                         freshness_candles=self.config.m1_trigger_freshness_candles,
+                        second_touch_enabled=second_touch_enabled,
+                        second_touch_config=second_touch_config,
                     )
                 if snapshot["state"] != "SAME_RETRACEMENT_ACTIVE":
                     candidate_timeline.append({"event_time": event_time, "timeframe": timeframe, "index": index, "parent_state": snapshot["state"], "candidate": None, "reason": "PARENT_EXTENSION_NOT_AVAILABLE"})
@@ -497,6 +570,8 @@ class PrefixCausalReentryCoordinator:
                     require_child_reset=timeframe == "M1", original_trigger_index=original_trigger_index,
                     original_trigger_price=original_trigger_price, meaningful_reset_atr=self.config.meaningful_reset_atr,
                     freshness_candles=self.config.m1_trigger_freshness_candles if timeframe == "M1" else self.config.m5_trigger_freshness_candles,
+                    second_touch_enabled=second_touch_enabled,
+                    second_touch_config=second_touch_config,
                 )
                 candidate_timeline.append({"event_time": event_time, "timeframe": timeframe, "index": index, "parent_state": snapshot["state"], "candidate": candidate, "reason": "CURRENT_PREFIX_EVALUATED"})
                 if candidate:
