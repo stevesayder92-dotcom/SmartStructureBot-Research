@@ -44,5 +44,6 @@
     "COSTS_ERASED_EDGE",
     "ACCOUNT_STOP_OUT",
     "CURRENCY_CONVERSION_MISSING"
-  ]
+  ],
+  "second_touch_causal_repair": false
 }

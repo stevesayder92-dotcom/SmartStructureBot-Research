@@ -104,7 +104,20 @@ def _entry_model(entry: dict[str, Any], parent: dict[str, Any], candidate: dict[
         "anchor": {"index": counter_index, "level": float(entry["counter_structure_price"]), "side": counter_side, "confirmed_at_index": min(counter_index + 2, int(entry["entry_index"]))},
         "counter": {"index": counter_index, "level": float(entry["counter_structure_price"]), "side": counter_side, "confirmed_at_index": min(counter_index + 2, int(entry["entry_index"]))},
         "trigger": {"index": trigger_index, "level": float(entry["failure_trigger_price"]), "side": trigger_side, "confirmed_at_index": int(entry["failure_trigger_available_at_index"])},
-        "logical_stop_structure": {"index": logical_index, "level": float(entry["logical_stop"]), "side": counter_side, "confirmed_at_index": min(logical_index + 2, int(entry["entry_index"]))},
+        "logical_stop_structure": {
+            "index": logical_index,
+            "level": float(entry["logical_structure_level"] if entry.get("logical_structure_level") is not None else entry["logical_stop"]),
+            "price": float(entry["logical_structure_level"] if entry.get("logical_structure_level") is not None else entry["logical_stop"]),
+            "side": counter_side,
+            "confirmed_at_index": min(logical_index + 2, int(entry["entry_index"])),
+            "available_at_index": min(logical_index + 2, int(entry["entry_index"])),
+            "selection_method": entry.get("logical_stop_owner_price_basis") or entry.get("logical_stop_terminology"),
+            "owner_price_basis": entry.get("logical_stop_owner_price_basis"),
+        },
+        "logical_stop_owner_price_basis": entry.get("logical_stop_owner_price_basis"),
+        "logical_stop_terminology": entry.get("logical_stop_terminology"),
+        "second_touch": deepcopy(entry.get("second_touch") or {}),
+        "retracement_id": entry.get("parent_m5_retracement_id"),
         "stop_level": float(entry["logical_stop"]),
         "fibonacci": deepcopy((parent.get("retrospective_m5_outcome") or {}).get("candidate", {}).get("fibonacci") or candidate.get("fibonacci") or {}),
     }
@@ -168,6 +181,8 @@ def _managed_outcome(
         "reentry_used": len(attempt_metrics) > 1,
         "sequence_win_loss": "WIN" if sequence_r > 1e-9 else "LOSS" if sequence_r < -1e-9 else "FLAT",
         "attempts": attempt_metrics,
+        "initial_stop_contract": deepcopy((attempts[0] if attempts else {}).get("initial_stop_contract") or {}),
+        "attempt2_initial_stop_contract": deepcopy((attempts[1] if len(attempts) > 1 else {}).get("initial_stop_contract") or {}),
         "management_state": management.get("state"),
         "order_api_called": False,
         "causal_valid": bool(management.get("causal_valid", True)),
@@ -191,7 +206,7 @@ def _funnel_state(value: str) -> str:
     return mapping.get(value, "OTHER")
 
 
-def _symbol_job(symbol_dir: str, second_touch_enabled: bool = False) -> dict[str, Any]:
+def _symbol_job(symbol_dir: str, second_touch_enabled: bool = False, second_touch_causal_repair: bool = False) -> dict[str, Any]:
     base = ROOT / "simulator_data" / "library" / symbol_dir
     manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
     symbol = str(manifest["symbol"])
@@ -200,7 +215,7 @@ def _symbol_job(symbol_dir: str, second_touch_enabled: bool = False) -> dict[str
     config = load_config()
     candidates: list[dict[str, Any]] = []
     for direction in ("BULLISH", "BEARISH"):
-        candidates.extend(scan_expert_m5_candidates(m5, direction=direction, symbol=symbol, timeframe="M5", sensitivity=config.engine_sensitivity, second_touch_enabled=second_touch_enabled))
+        candidates.extend(scan_expert_m5_candidates(m5, direction=direction, symbol=symbol, timeframe="M5", sensitivity=config.engine_sensitivity, second_touch_enabled=second_touch_enabled, second_touch_causal_repair=second_touch_causal_repair))
     candidates.sort(key=lambda row: (int(row["entry_index"]), str(row["direction"])))
     unique: list[dict[str, Any]] = []
     seen: set[str] = set()
@@ -228,8 +243,8 @@ def _symbol_job(symbol_dir: str, second_touch_enabled: bool = False) -> dict[str
         except (KeyError, ValueError, IndexError):
             continue
         visible_m1 = m1[m1["time"].astype(float) + 60.0 <= terminal_time].reset_index(drop=True)
-        baseline_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=COUNTER_CONFIRMED_ACTIVE, second_touch_enabled=second_touch_enabled)
-        variant_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE, second_touch_enabled=second_touch_enabled)
+        baseline_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=COUNTER_CONFIRMED_ACTIVE, second_touch_enabled=second_touch_enabled, second_touch_causal_repair=second_touch_causal_repair)
+        variant_report = find_m1_child_entry(parent=parent, m1_data=visible_m1, sensitivity=2, decision_time=terminal_time, permission_policy=EARNED_EARLY_OR_COUNTER_CONFIRMED_ACTIVE, second_touch_enabled=second_touch_enabled, second_touch_causal_repair=second_touch_causal_repair)
         baseline = arbitrate_first_valid_entry(parent=parent, m1_result=baseline_report, decision_time=terminal_time)
         variant = arbitrate_first_valid_entry(parent=parent, m1_result=variant_report, decision_time=terminal_time)
         b_entry = dict(baseline.get("entry") or {})
@@ -270,6 +285,7 @@ def _symbol_job(symbol_dir: str, second_touch_enabled: bool = False) -> dict[str
             "s2b_counter_index": s_entry.get("counter_structure_index"), "s2b_counter_price": s_entry.get("counter_structure_price"), "s2b_trigger_index": s_entry.get("failure_trigger_index"), "s2b_trigger_available_index": s_entry.get("failure_trigger_available_at_index"), "s2b_trigger_price": s_entry.get("failure_trigger_price"), "s2b_entry_index": s_entry.get("entry_index"), "s2b_quality_score": s_entry.get("m1_quality_score"), "s2b_grade": s_entry.get("grade"),
             "review_end_time": _iso(review_end_time), "review_end_epoch": review_end_time, "baseline_management": b_out, "s2b_management": s_out, "causal_valid": bool(b_out["causal_valid"] and s_out["causal_valid"] and same_parent), "order_api_called": False,
             "second_touch_enabled": second_touch_enabled,
+            "second_touch_causal_repair": second_touch_causal_repair,
             "baseline_second_touch": b_second_touch,
             "s2b_second_touch": s_second_touch,
             "baseline_second_touch_entry": bool(b_entry.get("second_touch_entry") or (baseline.get("entry_owner") == "M5" and candidate.get("second_touch_entry"))),
@@ -290,7 +306,7 @@ def _symbol_job(symbol_dir: str, second_touch_enabled: bool = False) -> dict[str
         shadow = evaluate_armed_to_active_shadow(parent=parent, m1_data=visible_m1, sensitivity=2)
         for event in shadow.get("events", []):
             funnel_events.append({"symbol": symbol, "setup_id": candidate["setup_id"], "direction": candidate["direction"], "state": _funnel_state(str(event["state"])), "raw_state": event["state"], "event_index": event.get("trigger_available_at_index"), "event_time": _iso(event.get("trigger_available_time")), "event_epoch": event.get("trigger_available_time"), "armed_time": _iso(parent["armed_time"]), "active_time": _iso(parent["active_time"]), "reason": [r.get("state") for r in event.get("rejections", [])], "order_api_called": False})
-    return {"symbol": symbol, "candidate_count": len(unique), "pairs": pairs, "funnel_events": funnel_events, "second_touch_enabled": second_touch_enabled}
+    return {"symbol": symbol, "candidate_count": len(unique), "pairs": pairs, "funnel_events": funnel_events, "second_touch_enabled": second_touch_enabled, "second_touch_causal_repair": second_touch_causal_repair}
 
 
 def _font(size: int, bold: bool = False) -> ImageFont.ImageFont:

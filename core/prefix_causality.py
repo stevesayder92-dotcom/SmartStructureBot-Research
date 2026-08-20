@@ -336,6 +336,7 @@ def evaluate_reentry_candidate_at(
     meaningful_reset_atr: float,
     freshness_candles: int,
     second_touch_enabled: bool = False,
+    second_touch_causal_repair: bool = False,
     second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Optional[Dict[str, Any]]:
     timeframe = str(timeframe).upper()
@@ -361,8 +362,7 @@ def evaluate_reentry_candidate_at(
         if str(direction).upper() == "BULLISH"
         else close < _f(trigger["price"]) and opened > close and previous >= _f(trigger["price"])
     )
-    if not crossed:
-        return None
+    legacy_crossed = crossed
     second_touch_owner = {
         "parent_setup_id": parent_setup_id,
         "retracement_id": parent_retracement_id,
@@ -380,17 +380,32 @@ def evaluate_reentry_candidate_at(
         owner=second_touch_owner,
         expected_owner=second_touch_owner,
         config=second_touch_config,
+        causal_repair=second_touch_causal_repair,
     )
     if second_touch_enabled and second_touch["state"] == "SECOND_TOUCH_CANDIDATE":
         return None
     second_touch_active = bool(
         second_touch_enabled
-        and second_touch["state"] == "SECOND_TOUCH_CONFIRMED"
+        and second_touch["state"] == ("SECOND_TOUCH_PROVED_BY_BOS" if second_touch_causal_repair else "SECOND_TOUCH_CONFIRMED")
     )
     if second_touch_active:
         active_trigger = second_touch.get("active_trigger") or {}
-        if int(active_trigger.get("swing_index", -1)) != int(trigger["swing_index"]):
+        if second_touch_causal_repair:
+            if int(second_touch.get("bos_proof_index", -1)) != current:
+                return None
+            trigger = {
+                "swing_index": int(active_trigger["swing_index"]),
+                "available_at_index": int(active_trigger.get("available_at_index", active_trigger["swing_index"])),
+                "price": _f(active_trigger["price"]),
+                "side": active_trigger.get("side"),
+            }
+            crossed = (close > _f(trigger["price"]) and opened < close if str(direction).upper() == "BULLISH" else close < _f(trigger["price"]) and opened > close)
+        elif int(active_trigger.get("swing_index", -1)) != int(trigger["swing_index"]):
             return None
+    else:
+        crossed = legacy_crossed
+    if not crossed:
+        return None
     counters = [event for event in visible if event["side"] == counter_side and start <= int(event["swing_index"]) < current]
     counter = max(counters, key=lambda event: int(event["swing_index"])) if counters else None
     atr = max(atr_at(data.iloc[: current + 1], as_of_index=current), 1e-12)
@@ -502,6 +517,7 @@ class PrefixCausalReentryCoordinator:
         m1 = m1_data.reset_index(drop=True)
         m5 = m5_data.reset_index(drop=True)
         second_touch_enabled = bool(getattr(self.config, "second_touch_enabled", False))
+        second_touch_causal_repair = bool(getattr(self.config, "second_touch_causal_repair", False))
         second_touch_config = SecondTouchConfig(
             proximity_atr_ratio=float(
                 getattr(self.config, "second_touch_proximity_atr_ratio", 0.25)
@@ -558,6 +574,7 @@ class PrefixCausalReentryCoordinator:
                         original_trigger_price=original_trigger_price, meaningful_reset_atr=self.config.meaningful_reset_atr,
                         freshness_candles=self.config.m1_trigger_freshness_candles,
                         second_touch_enabled=second_touch_enabled,
+                        second_touch_causal_repair=second_touch_causal_repair,
                         second_touch_config=second_touch_config,
                     )
                 if snapshot["state"] != "SAME_RETRACEMENT_ACTIVE":

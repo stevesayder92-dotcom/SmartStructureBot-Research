@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass, field
+import hashlib
+import json
 from typing import Any, Dict, Iterable, Optional
 
 import pandas as pd
@@ -238,147 +240,123 @@ def select_setup_logical_invalidation(
     timeframe: Any,
     config: SteveManagementConfig,
 ) -> Dict[str, Any]:
-    """
-    Select the last important pre-BOS structure published by the entry model.
+    """Select causal logical invalidation without reinterpreting owner semantics.
 
-    For a BUY this is the latest causal LOW/LL inside the qualified
-    retracement before the bullish entry BOS. For a SELL it is the latest
-    causal HIGH/HH before the bearish entry BOS. The original counter-swing is
-    retained only as a compatibility fallback.
+    S2B.1.1 special case: when the entry publishes
+    ``SECOND_TOUCH_WICK_EXTREME`` the Touch-2 wick is authoritative. Body
+    edges remain compatibility metadata only and are never allowed to replace
+    that wick downstream.
     """
     direction = str(entry_model.get("direction")).upper()
     if direction not in {"BULLISH", "BEARISH"}:
         raise ValueError("Entry direction must be BULLISH or BEARISH")
     entry_index = int(entry_model["entry_index"])
     counter = dict(entry_model.get("counter") or {})
-    structure = dict(
-        entry_model.get("logical_stop_structure") or counter
-    )
+    structure = dict(entry_model.get("logical_stop_structure") or counter)
     trigger = dict(entry_model.get("trigger") or {})
     if structure.get("index") is None or trigger.get("index") is None:
-        raise ValueError(
-            "Qualified entry must publish its logical structure and trigger"
-        )
+        raise ValueError("Qualified entry must publish its logical structure and trigger")
     structure_index = int(structure["index"])
     trigger_index = int(trigger["index"])
-    available_at = int(
-        structure.get("confirmed_at_index", structure_index)
-    )
-    trigger_available_at = int(
-        trigger.get("confirmed_at_index", trigger_index)
-    )
+    available_at = int(structure.get("available_at_index", structure.get("confirmed_at_index", structure_index)))
+    trigger_available_at = int(trigger.get("available_at_index", trigger.get("confirmed_at_index", trigger_index)))
     expected_side = "LOW" if direction == "BULLISH" else "HIGH"
     if str(structure.get("side")).upper() != expected_side:
         raise ValueError("Logical stop structure is on the wrong side")
-    if not (
-        structure_index < entry_index
-        and trigger_index < entry_index
-        and available_at <= entry_index
-        and trigger_available_at <= entry_index
-    ):
-        raise ValueError(
-            "Invalidation must be confirmed before the trigger/entry"
-        )
+    if not (structure_index < entry_index and trigger_index < entry_index and available_at <= entry_index and trigger_available_at <= entry_index):
+        raise ValueError("Invalidation must be available before the trigger/entry")
 
     row = data.iloc[structure_index]
-    wick_price = (
-        _number(row["low"])
-        if direction == "BULLISH"
-        else _number(row["high"])
-    )
+    wick_price = _number(row["low"] if direction == "BULLISH" else row["high"])
     body_lower_edge = min(_number(row["open"]), _number(row["close"]))
     body_upper_edge = max(_number(row["open"]), _number(row["close"]))
-    body_close_level = (
-        body_lower_edge if direction == "BULLISH" else body_upper_edge
-    )
+    body_close_level = body_lower_edge if direction == "BULLISH" else body_upper_edge
+    basis = str(
+        structure.get("owner_price_basis")
+        or structure.get("selection_method")
+        or entry_model.get("logical_stop_owner_price_basis")
+        or entry_model.get("logical_stop_terminology")
+        or "M1_RELEVANT_SWING_BODY_EDGE"
+    ).upper()
+    second_touch = basis == "SECOND_TOUCH_WICK_EXTREME"
+    # The structural level is the wick for second-touch entries. Never trust a
+    # downstream body-edge alias over this canonical price basis.
+    logical_structure_level = wick_price if second_touch else body_close_level
     atr_value = atr_at(data, as_of_index=entry_index)
     is_m1 = _timeframe_name(timeframe) == "M1"
-    tolerance = 0.0 if is_m1 else float(config.m5_atr_tolerance)
-    logical_boundary = (
-        body_close_level
-        if is_m1
-        else body_close_level - tolerance * atr_value
-        if direction == "BULLISH"
-        else body_close_level + tolerance * atr_value
-    )
+    tolerance_ratio = 0.0 if is_m1 else float(config.m5_atr_tolerance)
+    tolerance_value = tolerance_ratio * atr_value
+    if second_touch:
+        logical_boundary = (
+            logical_structure_level
+            if is_m1
+            else logical_structure_level - tolerance_value
+            if direction == "BULLISH"
+            else logical_structure_level + tolerance_value
+        )
+    else:
+        logical_boundary = (
+            body_close_level
+            if is_m1
+            else body_close_level - tolerance_value
+            if direction == "BULLISH"
+            else body_close_level + tolerance_value
+        )
     entry_price = _number(entry_model["entry_price"])
-    correct_side = (
-        logical_boundary < entry_price
-        if direction == "BULLISH"
-        else logical_boundary > entry_price
-    )
+    correct_side = logical_boundary < entry_price if direction == "BULLISH" else logical_boundary > entry_price
     broad_extreme = entry_model.get("stop_level")
-    broad_rejected = (
-        broad_extreme is not None
-        and abs(_number(broad_extreme) - body_close_level) > 1e-12
+    broad_rejected = broad_extreme is not None and abs(_number(broad_extreme) - logical_structure_level) > 1e-12
+    timeframe_name = _timeframe_name(timeframe)
+    invalidation_semantics = (
+        "M1_EXACT_WICK_BODY_CLOSE" if second_touch and is_m1
+        else "M5_SECOND_TOUCH_WICK_ATR_TOLERANT_BODY_CLOSE" if second_touch
+        else "M1_RELEVANT_SWING_BODY_EDGE" if is_m1
+        else "M5_RELEVANT_BODY_EDGE_ATR_TOLERANT"
     )
     reasons = [
-        "Selected the last important pre-BOS LOW/LL for a buy or HIGH/HH "
-        "for a sell inside the same qualified retracement",
-        "The structure and its fixed-delay confirmation were available no "
-        "later than the entry candle close",
+        "Selected the causal setup invalidation structure published by the entry model",
+        "Structure and trigger were available no later than the entry candle close",
     ]
-    if structure_index > trigger_index:
-        reasons.append(
-            "The selected swing formed after the failure trigger and was the "
-            "final opposing structure supporting the entry BOS"
-        )
+    if second_touch:
+        reasons.append("SECOND_TOUCH_WICK_EXTREME is authoritative; body-edge reinterpretation is forbidden")
+    elif is_m1:
+        reasons.append("Legacy M1 non-second-touch invalidation retains body-edge semantics")
     else:
-        reasons.append(
-            "No later confirmed protective swing existed, so the latest "
-            "same-retracement structure was retained"
-        )
-    if is_m1:
-        reasons.append(
-            "M1 logical invalidation uses M1_RELEVANT_SWING_BODY_EDGE; "
-            "a wick alone cannot invalidate"
-        )
-    else:
-        reasons.append(
-            "M5 logical boundary is beyond the relevant body edge by the "
-            "configured causal ATR tolerance"
-        )
-    if broad_rejected:
-        reasons.append(
-            "The broad pullback extreme was retained for comparison but "
-            "rejected as the logical stop because it was not the directly "
-            "relevant defended pre-BOS structure"
-        )
+        reasons.append("Legacy M5 non-second-touch invalidation retains body-edge plus causal ATR tolerance")
     return {
         "invalidation_role": "SETUP_LOGICAL_INVALIDATION",
         "availability": "AVAILABLE",
         "available": True,
         "state": "LOGICAL_STRUCTURE_SELECTED",
-        "owner": "ProtectedStructureEngine",
+        "owner": "SecondTouchStructureEngine" if second_touch else "ProtectedStructureEngine",
+        "owner_type": "SECOND_TOUCH_WICK" if second_touch else "PRE_BOS_STRUCTURE",
+        "owner_index": structure_index,
+        "owner_time": data.iloc[structure_index].get("time"),
+        "owner_price": logical_structure_level,
+        "owner_price_basis": "SECOND_TOUCH_WICK_EXTREME" if second_touch else basis,
         "setup_id": entry_model.get("setup_id"),
+        "retracement_id": entry_model.get("retracement_id") or ((entry_model.get("second_touch") or {}).get("ownership") or {}).get("retracement_id"),
         "direction": direction,
-        "timeframe": _timeframe_name(timeframe),
+        "timeframe": timeframe_name,
         "structure_index": structure_index,
-        "structure_type": (
-            str(structure.get("classification"))
-            if structure.get("classification")
-            else expected_side
-        ),
-        "selection_scope": structure.get(
-            "selection_scope",
-            "ENTRY_MODEL_PUBLISHED_LOGICAL_STRUCTURE",
-        ),
+        "structure_type": str(structure.get("classification") or expected_side),
+        "selection_scope": structure.get("selection_scope", "ENTRY_MODEL_PUBLISHED_LOGICAL_STRUCTURE"),
         "wick_price": wick_price,
         "body_close_level": body_close_level,
         "body_lower_edge": body_lower_edge,
         "body_upper_edge": body_upper_edge,
         "atr_at_entry": atr_value,
-        "atr_tolerance": tolerance,
+        "atr_tolerance": tolerance_ratio,
+        "atr_tolerance_value": tolerance_value,
+        "logical_structure_level": logical_structure_level,
+        "initial_logical_invalidation_level": logical_boundary,
         "logical_boundary": logical_boundary,
         "logical_stop": logical_boundary,
-        "broad_pullback_extreme": (
-            _number(broad_extreme)
-            if broad_extreme is not None
-            else None
-        ),
+        "invalidation_semantics": invalidation_semantics,
+        "broad_pullback_extreme": _number(broad_extreme) if broad_extreme is not None else None,
         "broad_pullback_extreme_rejected": broad_rejected,
         "failure_trigger_index": trigger_index,
-        "failure_trigger_level": _number(trigger["level"]),
+        "failure_trigger_level": _number(trigger.get("level", trigger.get("price"))),
         "selection_reason": reasons,
         "reasons": reasons,
         "available_at_index": available_at,
@@ -602,6 +580,46 @@ def transition_protection_without_loosening(
     }
 
 
+
+def build_initial_stop_contract(
+    *,
+    invalidation: Dict[str, Any],
+    emergency: Dict[str, Any],
+    entry_model: Dict[str, Any],
+    attempt_number: int,
+) -> Dict[str, Any]:
+    """Build immutable semantic entry-stop truth as plain serializable data."""
+    setup_id = str(entry_model.get("setup_id") or invalidation.get("setup_id") or "UNKNOWN_SETUP")
+    retracement_id = str(
+        entry_model.get("retracement_id")
+        or invalidation.get("retracement_id")
+        or f"{setup_id}|RETRACEMENT"
+    )
+    owner_index = int(invalidation["owner_index"])
+    contract = {
+        "contract_id": f"{setup_id}|ATTEMPT_{int(attempt_number)}|STOP|{owner_index}",
+        "contract_version": "INITIAL_STOP_CONTRACT_S2B1_1_V1",
+        "owner_type": invalidation["owner_type"],
+        "owner_index": owner_index,
+        "owner_time": invalidation.get("owner_time"),
+        "owner_price": _number(invalidation["owner_price"]),
+        "owner_price_basis": invalidation["owner_price_basis"],
+        "timeframe": invalidation["timeframe"],
+        "direction": invalidation["direction"],
+        "logical_structure_level": _number(invalidation["logical_structure_level"]),
+        "initial_logical_invalidation_level": _number(invalidation["initial_logical_invalidation_level"]),
+        "ATR_tolerance": _number(invalidation.get("atr_tolerance", 0.0)),
+        "emergency_stop": _number(emergency["price"]),
+        "invalidation_semantics": invalidation["invalidation_semantics"],
+        "setup_id": setup_id,
+        "retracement_id": retracement_id,
+        "attempt_number": int(attempt_number),
+    }
+    payload = json.dumps(contract, sort_keys=True, default=str, separators=(",", ":"))
+    contract["contract_hash"] = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    return contract
+
+
 def _sizing_plan(profile: str, attempt_number: int) -> Dict[str, Any]:
     if profile == "STRUCTURE_RUNNER_ONLY":
         fractions = [1.0]
@@ -741,6 +759,12 @@ class SteveTradeManagementEngine:
             logical_invalidation=invalidation,
             config=self.config,
         )
+        initial_stop_contract = build_initial_stop_contract(
+            invalidation=invalidation,
+            emergency=emergency,
+            entry_model=entry_model,
+            attempt_number=attempt_number,
+        )
         dominant = dominant_decision_protection(
             context=context,
             direction=entry_model["direction"],
@@ -766,6 +790,7 @@ class SteveTradeManagementEngine:
             "entry_price": _number(entry_model["entry_price"]),
             "status": "ACTIVE",
             "logical_invalidation": invalidation,
+            "initial_stop_contract": initial_stop_contract,
             "dominant_decision_protection": dominant,
             "emergency_broker_stop_contract": emergency,
             "logical_stop": invalidation["logical_boundary"],

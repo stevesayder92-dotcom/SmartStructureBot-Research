@@ -1,0 +1,35 @@
+{
+  "tree_sha256": "aeb7742ec4866131172cd9213b9750b05f3de537298110bde5c14b0f1cd9837c",
+  "files": [
+    {
+      "path": "research_data/GER40Cash_M5_phase5b_closed.csv",
+      "sha256": "ea23af9067e59a8a89dddb1761620e4ac2a9ddfc3bbf491bc563d78170f6e585",
+      "size": 547341
+    },
+    {
+      "path": "research_data/GOLD_M1.csv",
+      "sha256": "b823adbd1a1463670716750457e0e24a8d8253a41fcc1858551e80ba21acb73f",
+      "size": 372716
+    },
+    {
+      "path": "research_data/GOLD_M1_phase5b_closed.csv",
+      "sha256": "214f2dba3cd5edfeabb431e6308bc820dae4d0123d8eb2f72444c3aacdf773a9",
+      "size": 627287
+    },
+    {
+      "path": "research_data/GOLD_M5_NY_open_closed.csv",
+      "sha256": "43b9ca2e1352d0f634ef04a20a61d4190c8ca0a3ad8ae00e5b7605accc417a9b",
+      "size": 526798
+    },
+    {
+      "path": "research_data/GOLD_M5_phase5b_closed.csv",
+      "sha256": "59b89eabcd3226bcde7a4b489e34314b247a57f0da4fd1d26b2c243620918a30",
+      "size": 526825
+    },
+    {
+      "path": "research_data/US100Cash_M5_closed.csv",
+      "sha256": "39ba9daa6a34cedc329e7d7890e29674c938db59aeb738451cb8565324d4e561",
+      "size": 550055
+    }
+  ]
+}

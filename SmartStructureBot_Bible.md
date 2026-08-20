@@ -2828,3 +2828,50 @@ use a small positive, cost-covered break-even protection instead. Existing
 tighter proven protection always wins. Protection may tighten or hold, never
 loosen. TP1, management and outcome code remain unchanged until S2B.2 is
 explicitly authorized.
+
+
+---
+
+## S2B.1.1 Contract Integrity + Causal Second-Touch Timing Repair
+
+Status: **RESEARCH/PAPER ONLY**. This section freezes the approved S2B.1.1 repair contract before source-code changes. It does not authorize live/demo order execution.
+
+### Causal second-touch lifecycle
+
+1. Touch-2 becomes `SECOND_TOUCH_CANDIDATE` at the close of the actual Touch-2 candle when same-parent wick proximity is within **0.25 causal ATR frozen at Touch_2_Index**, Touch-1/Touch-2 are separated by at least **3 candles**, and the separating reaction is meaningful (>= **0.35 causal ATR**). Traditional N-right swing confirmation is not required for the candidate.
+2. After Touch-2, a meaningful provisional reaction is derived only from **closed pre-BOS candles**. Bullish double-bottom uses the post-Touch-2 reaction **HIGH**; bearish double-top uses the reaction **LOW**.
+3. The `ProvisionalTrigger` must exist before the BOS candle. The BOS candle may causally prove the provisional reaction but may not create the level it breaks.
+4. BOS proof requires a correctly directed **body close** beyond the ProvisionalTrigger. Wick-only breaks are rejected. Proven state is `SECOND_TOUCH_PROVED_BY_BOS`; entry timing is the BOS candle close after SystemStateDirector authorization.
+
+### Initial stop contract
+
+For accepted second-touch entries, `owner_price_basis = SECOND_TOUCH_WICK_EXTREME` and the structural owner price is the exact Touch-2 wick. The immutable InitialStopContract carries identity/lineage, timeframe/direction, logical structure, initial logical invalidation, ATR tolerance, emergency stop, invalidation semantics, and attempt number. Downstream management/simulator/replay code may not reinterpret the Touch-2 wick as a candle-body edge.
+
+- **M1:** exact Touch-2 wick, zero ATR tolerance; wick-only excursion survives; body-close invalidation uses existing canonical M1 semantics.
+- **M5:** Touch-2 wick remains structural owner; existing canonical M5 tolerance is **0.15 × ATR(entry_index)**; BUY boundary is wick minus tolerance, SELL boundary is wick plus tolerance.
+- Emergency stop remains separate and preserves the pre-existing canonical emergency-stop algorithm.
+
+`InitialStopContract` is write-once historical truth. Post-entry tightening belongs to `ActiveProtectionState`; BUY protection may rise/hold only, SELL protection may fall/hold only, and protection never loosens.
+
+### Authority, causality, and re-entry
+
+SystemStateDirector remains the final `ENTRY / REENTRY / NO_ACTION` authority. Closed-candle causality, historical immutability, and suffix invariance are mandatory. One parent setup permits one first attempt plus at most one re-entry; Attempt 2 requires fresh qualified structure while the same parent and dominant protection remain valid, and may never rewrite Attempt 1.
+
+### Research governance
+
+A = `CANONICAL_CONTROL`; B = `REPAIRED_SECOND_TOUCH_CANONICAL`; C = `REPAIRED_SECOND_TOUCH_EARNED_EARLY`, where B and C use the same repaired second-touch implementation and differ only in permission policy. `MANUAL_SHADOW` is audit-only and never feeds automated state. Canonical `research_data/` is read-only; S2B.1.1 output belongs under `research_runs/s2b1_1/`. No TP1, AI, scanner, HTF/session/risk/profit tuning, live/demo trading, or order API changes are authorized in this phase.
+
+### S2B.1.1 permanent test names
+
+- `test_repaired_touch2_candidate_does_not_wait_for_n_right_confirmation`
+- `test_repaired_bearish_trigger_is_post_touch_low_and_bos_proves_it`
+- `test_suffix_invariance_at_fixed_decision_timestamp`
+- `test_second_touch_m1_stop_uses_exact_wick_not_body_edge`
+- `test_second_touch_m5_sell_boundary_is_wick_plus_tolerance`
+- `test_initial_stop_contract_is_complete_and_semantically_stable`
+- `test_anchor_identity_is_exact_and_manual_shadow_only`
+- `test_metric_schema_contains_locked_research_fields`
+- `test_missing_anchor_report_is_explicit_rejection_not_guess`
+- `test_proved_state_supports_repaired_and_legacy_control`
+- `test_runner_is_repo_local_and_output_isolated`
+- `test_parent_contract_rejects_unavailable_fibonacci_anchors_explicitly`

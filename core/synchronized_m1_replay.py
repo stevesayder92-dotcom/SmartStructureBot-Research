@@ -194,30 +194,48 @@ def build_parent_contract(
     fibonacci = dict(candidate.get("fibonacci") or {})
     logical = dict(candidate.get("logical_stop_structure") or counter)
     entry_index = int(candidate["entry_index"])
+
+    # A synchronized M1 parent contract cannot be created without the exact
+    # causal M5 impulse anchors.  Repaired second-touch timing can surface an
+    # otherwise valid terminal entry before FibonacciRetracementEngine has a
+    # causally confirmed same-cycle origin.  That candidate is intentionally
+    # non-replayable as an M1 parent; reject it explicitly instead of allowing
+    # int(None) / float(None) to crash the research run or inventing fallback
+    # ownership.
+    fib_zero_index = fibonacci.get(
+        "fib_zero_index", fibonacci.get("zero_anchor_index")
+    )
+    fib_hundred_index = fibonacci.get(
+        "fib_hundred_index", fibonacci.get("hundred_anchor_index")
+    )
+    fib_zero_price = fibonacci.get(
+        "fib_zero_price", fibonacci.get("zero_anchor_price")
+    )
+    fib_hundred_price = fibonacci.get(
+        "fib_hundred_price", fibonacci.get("hundred_anchor_price")
+    )
+    if (
+        not fibonacci.get("available", False)
+        or fib_zero_index is None
+        or fib_hundred_index is None
+        or fib_zero_price is None
+        or fib_hundred_price is None
+    ):
+        reasons = "; ".join(str(x) for x in fibonacci.get("reasons", []))
+        raise ValueError(
+            "M5 parent contract requires causally available Fibonacci anchors"
+            + (f": {reasons}" if reasons else "")
+        )
     anchor_confirmation = int(
         anchor.get("confirmed_at_index", anchor["index"])
     )
     counter_confirmation = int(
         counter.get("confirmed_at_index", counter.get("index", anchor_confirmation))
     )
-    origin_index = int(
-        fibonacci.get("fib_zero_index", fibonacci.get("zero_anchor_index"))
-    )
-    extreme_index = int(
-        fibonacci.get(
-            "fib_hundred_index",
-            fibonacci.get("hundred_anchor_index"),
-        )
-    )
-    origin_price = _number(
-        fibonacci.get("fib_zero_price", fibonacci.get("zero_anchor_price"))
-    )
-    extreme_price = _number(
-        fibonacci.get(
-            "fib_hundred_price",
-            fibonacci.get("hundred_anchor_price"),
-        )
-    )
+    origin_index = int(fib_zero_index)
+    extreme_index = int(fib_hundred_index)
+    origin_price = _number(fib_zero_price)
+    extreme_price = _number(fib_hundred_price)
     m5_atr = atr_at(m5_data, as_of_index=entry_index)
     logical_index = int(logical["index"])
     if candidate.get("second_touch_entry"):
@@ -742,6 +760,7 @@ def _find_m1_child_entry_single(
     trigger_available_filter: Optional[int] = None,
     permission_policy: str = COUNTER_CONFIRMED_ACTIVE,
     second_touch_enabled: bool = False,
+    second_touch_causal_repair: bool = False,
     second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Dict[str, Any]:
     """
@@ -1003,10 +1022,11 @@ def _find_m1_child_entry_single(
             protection_intact=parent.get("dominant_protection_intact") is not False,
             setup_consumed=bool(parent.get("entry_opportunity_consumed")),
             config=second_touch_config,
+            causal_repair=second_touch_causal_repair,
         )
         second_touch_active = bool(
             second_touch_enabled
-            and second_touch.get("state") == "SECOND_TOUCH_CONFIRMED"
+            and second_touch.get("state") == ("SECOND_TOUCH_PROVED_BY_BOS" if second_touch_causal_repair else "SECOND_TOUCH_CONFIRMED")
         )
         if second_touch_enabled and second_touch.get("state") == "SECOND_TOUCH_CANDIDATE":
             rejections.append(
@@ -1021,7 +1041,24 @@ def _find_m1_child_entry_single(
             continue
         if second_touch_active:
             owned_trigger = second_touch.get("active_trigger") or {}
-            if int(owned_trigger.get("swing_index", -1)) != trigger_index:
+            if second_touch_causal_repair:
+                if int(second_touch.get("bos_proof_index", -1)) != int(entry_index):
+                    rejections.append({
+                        "state": "M1_SECOND_TOUCH_BOS_PROOF_AT_DIFFERENT_CANDLE",
+                        "m1_index": entry_index,
+                        "second_touch": second_touch,
+                        "hard_blockers": ["SECOND_TOUCH_BOS_PROOF_MISMATCH"],
+                    })
+                    continue
+                trigger_index = int(owned_trigger.get("swing_index"))
+                trigger_available = int(owned_trigger.get("available_at_index", trigger_index))
+                trigger = {
+                    "global_index": trigger_index,
+                    "global_confirmed_at_index": trigger_available,
+                    "level": _number(owned_trigger.get("price")),
+                    "side": owned_trigger.get("side"),
+                }
+            elif int(owned_trigger.get("swing_index", -1)) != trigger_index:
                 rejections.append(
                     {
                         "state": "M1_OLD_TRIGGER_SUPERSEDED_BY_SECOND_TOUCH",
@@ -1221,6 +1258,12 @@ def _find_m1_child_entry_single(
                 if second_touch_active
                 else M1_STOP_TERMINOLOGY
             ),
+            "logical_stop_owner_price_basis": (
+                "SECOND_TOUCH_WICK_EXTREME" if second_touch_active else None
+            ),
+            "logical_structure_level": logical_stop if second_touch_active else None,
+            "second_touch": second_touch if second_touch_active else {},
+            "second_touch_entry": bool(second_touch_active),
             "logical_stop": logical_stop,
             "stop_distance_m1": abs(entry_price - logical_stop),
             "emergency_stop": emergency,
@@ -1332,6 +1375,7 @@ def find_m1_child_entry(
     trigger_available_filter: Optional[int] = None,
     permission_policy: str = COUNTER_CONFIRMED_ACTIVE,
     second_touch_enabled: bool = False,
+    second_touch_causal_repair: bool = False,
     second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Dict[str, Any]:
     """Resolve an earned pre-ACTIVE entry without changing ACTIVE-era baseline."""
@@ -1345,6 +1389,7 @@ def find_m1_child_entry(
         "decision_time": decision_time,
         "permission_policy": permission_policy,
         "second_touch_enabled": second_touch_enabled,
+        "second_touch_causal_repair": second_touch_causal_repair,
         "second_touch_config": second_touch_config,
     }
     if (

@@ -21,6 +21,7 @@ class SimulatorConfig:
     allow_single_strong_htf: bool = False
     m1_permission_policy: str = "COUNTER_CONFIRMED_ACTIVE"
     second_touch_enabled: bool = False
+    second_touch_causal_repair: bool = False
     second_touch_proximity_atr_ratio: float = 0.25
     second_touch_meaningful_reaction_atr_ratio: float = 0.35
     second_touch_minimum_separation_bars: int = 3

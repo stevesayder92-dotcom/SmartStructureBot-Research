@@ -326,7 +326,7 @@ def test_invalid_separation_configuration_is_rejected():
 
 
 def test_research_data_hashes_still_match_frozen_manifest():
-    manifest = json.loads((ROOT / "research_runs/s2b1/research_data_before.json").read_text(encoding="utf-8-sig"))
+    manifest = json.loads((ROOT / "test_data/s2b1_1/research_data_manifest.json").read_text(encoding="utf-8-sig"))
     for record in manifest["files"]:
         path = ROOT / record["path"]
         assert hashlib.sha256(path.read_bytes()).hexdigest() == record["sha256"]

@@ -559,6 +559,7 @@ def _simulate_retracements(
     sensitivity: int,
     fibonacci_config: Optional[FibonacciConfig] = None,
     second_touch_enabled: bool = False,
+    second_touch_causal_repair: bool = False,
     second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> Dict[str, Any]:
     """Run the exact M5 pullback/trigger state machine over visible candles."""
@@ -729,7 +730,7 @@ def _simulate_retracements(
             "dominant_protection_identity": f"{setup_id}|DOMINANT_PROTECTION",
             "fib_anchor_version": getattr(fibonacci_config, "anchor_version", "FIBONACCI_CONTRACT_V1"),
         }
-        if current_second_touch is None or by_confirmation.get(candle_index):
+        if current_second_touch is None or second_touch_causal_repair or by_confirmation.get(candle_index):
             current_second_touch = evaluate_second_touch_structure(
                 data=data,
                 swings=swings,
@@ -739,6 +740,7 @@ def _simulate_retracements(
                 owner=second_touch_owner,
                 expected_owner=second_touch_owner,
                 config=second_touch_config,
+                causal_repair=second_touch_causal_repair,
             )
         second_touch = current_second_touch
         if second_touch_enabled and second_touch["state"] != published_second_touch_state:
@@ -754,21 +756,31 @@ def _simulate_retracements(
             continue
         second_touch_active = bool(
             second_touch_enabled
-            and second_touch["state"] == "SECOND_TOUCH_CONFIRMED"
+            and second_touch["state"] == ("SECOND_TOUCH_PROVED_BY_BOS" if second_touch_causal_repair else "SECOND_TOUCH_CONFIRMED")
         )
         if second_touch_active:
             active_trigger = second_touch.get("active_trigger") or {}
             active_index = int(active_trigger.get("swing_index", -1))
             if active_index != int(trigger["index"]):
-                replacement = next(
-                    (
-                        point
-                        for point in swings
-                        if int(point["index"]) == active_index
-                        and int(point["confirmed_at_index"]) <= candle_index
-                    ),
-                    None,
-                )
+                if second_touch_causal_repair:
+                    replacement = {
+                        "index": active_index,
+                        "level": _number(active_trigger.get("price")),
+                        "side": str(active_trigger.get("side")),
+                        "confirmed_at_index": int(active_trigger.get("available_at_index", active_index)),
+                        "available_at_index": int(active_trigger.get("available_at_index", active_index)),
+                        "selection_scope": "S2B1_1_PROVISIONAL_TRIGGER",
+                    }
+                else:
+                    replacement = next(
+                        (
+                            point
+                            for point in swings
+                            if int(point["index"]) == active_index
+                            and int(point["confirmed_at_index"]) <= candle_index
+                        ),
+                        None,
+                    )
                 if replacement is None:
                     continue
                 trigger = replacement
@@ -881,8 +893,10 @@ def _simulate_retracements(
                 "side": counter_side,
                 "index": int(touch_2["swing_index"]),
                 "confirmed_at_index": int(touch_2["available_at_index"]),
+                "available_at_index": int(touch_2["available_at_index"]),
                 "level": _number(touch_2["price"]),
                 "price": _number(touch_2["price"]),
+                "owner_price_basis": "SECOND_TOUCH_WICK_EXTREME",
                 "causal_valid": int(touch_2["available_at_index"]) <= candle_index,
             }
         else:
@@ -1021,6 +1035,7 @@ def scan_expert_m5_candidates(
     sensitivity: int = DEFAULT_ENGINE_SENSITIVITY,
     fibonacci_config: Optional[FibonacciConfig] = None,
     second_touch_enabled: bool = False,
+    second_touch_causal_repair: bool = False,
     second_touch_config: SecondTouchConfig = SecondTouchConfig(),
 ) -> list[Dict[str, Any]]:
     """Efficiently enumerate causal M5 candidates for offline review."""
@@ -1041,6 +1056,7 @@ def scan_expert_m5_candidates(
         sensitivity=sensitivity,
         fibonacci_config=fibonacci_config,
         second_touch_enabled=second_touch_enabled,
+        second_touch_causal_repair=second_touch_causal_repair,
         second_touch_config=second_touch_config,
     )
     return [
