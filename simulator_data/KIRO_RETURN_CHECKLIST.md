@@ -1,0 +1,24 @@
+# Kiro Return Checklist — Do not accept results without these
+
+- [ ] Exact Git commit hash supplied
+- [ ] Full git diff supplied
+- [ ] No unexplained uncommitted changes
+- [ ] TP1_ONLY_RESEARCH profile exists and is isolated from normal runner profile
+- [ ] Same core entry population reused for management A/B comparison
+- [ ] Test output supplied
+- [ ] Prefix/suffix causality tests pass
+- [ ] No forming candles used
+- [ ] No order API calls
+- [ ] Data SHA256 before == after
+- [ ] Entry audit CSV supplied
+- [ ] Rejected candidate CSV supplied
+- [ ] Closed-trade CSV supplied
+- [ ] Overall expectancy / PF / drawdown supplied
+- [ ] Per-symbol metrics supplied
+- [ ] M1 vs M5 metrics supplied
+- [ ] Attempt 1 vs Attempt 2 metrics supplied
+- [ ] Session metrics supplied
+- [ ] Open-boundary trades excluded from closed expectancy
+- [ ] Every error/fidelity failure listed, not silently discarded
+- [ ] Windows PowerShell reproduction command supplied
+- [ ] No AI/ML changes included in this branch
